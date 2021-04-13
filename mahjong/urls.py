@@ -16,6 +16,7 @@ urlpatterns = [
     path('',include(router.urls)),
     path('register/', views.CreateUserView.as_view(), name='register'), #ユーザー登録
     path('activate/<uuid:token>',views.UserActiveView.as_view(),name='activate'), #ユーザーの有効化
+    path('loginuserprofile/', views.MyProfileListView.as_view(), name='loginuserprofile'), #ログインユーザーのプロフィール
     path('groupmember/',views.GroupMemberProfiles.as_view(),name='groupmember'), #グループメンバーのプロフィール
     path('results/',views.ResultsForEachGroup.as_view(),name='results') # グループごとの対局結果
 ]

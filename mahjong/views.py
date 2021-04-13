@@ -30,6 +30,14 @@ class ProfileViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(userProfile=self.request.user)
 
+#ログインユーザーのプロフィール
+class MyProfileListView(generics.ListAPIView):
+    serializer_class = serializers.ProfileSerializer
+    #ログインしているユーザーのプロフィールを返す
+    def get_queryset(self):
+        queryset=Profile.objects.filter(userProfile=self.request.user)
+        return queryset
+
 #グループ
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -37,7 +45,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
-
+        
 class RateViewSet(viewsets.ModelViewSet):
     queryset = Rate.objects.all()
     serializer_class = serializers.RateSerializer

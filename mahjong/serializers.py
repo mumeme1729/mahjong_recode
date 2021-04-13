@@ -32,7 +32,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model=Group
-        fields=('id','title','userGroup')
+        fields=('id','title','img','userGroup')
 
 #グループごとのレート
 class RateSerializer(serializers.ModelSerializer):
@@ -57,7 +57,7 @@ class GroupMemberProfilesSerializer(serializers.ModelSerializer):
     profile=serializers.SerializerMethodField()
     class Meta:
         model=Group
-        fields=('id','title','profile')
+        fields=('id','title','img','profile')
     
     def get_profile(self,obj):
         profiles=[]
@@ -79,18 +79,15 @@ class ResultsForEachGroupSerializer(serializers.ModelSerializer):
         fields=('id','group_id','created_at','results')
     
     def get_results(self,obj):
-         print(obj.id)
          try:
              results=[]
              results_query=GameResults.objects.filter(game_id=obj.id)
              for result in results_query:
-                print(result.user_id)
                 results_abstruct_contents =GameResultsSerializer(GameResults.objects.filter(game_id=obj.id,user_id=result.user_id).first()).data
                 results.append(results_abstruct_contents)
              return results
          except:
              results_abstruct_contents=None
-             print(results_abstruct_contents)
              return results_abstruct_contents
     
 

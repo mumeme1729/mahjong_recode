@@ -2,9 +2,13 @@ from django.db import models
 from config import settings
 import uuid
 
+def upload_group_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return '/'.join(['group', str(instance.id)+str(".")+str(ext)])
 class Group(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
     title=models.CharField(max_length=30)
+    img = models.ImageField(blank=True, null=True, upload_to=upload_group_path)
     userGroup=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='group_user',blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -23,7 +27,7 @@ class Game(models.Model):
 class GameResults(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
     game_id=models.ForeignKey(Game,related_name='game_id',on_delete=models.CASCADE)
-    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,related_name='game_user',on_delete=models.CASCADE)
+    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,related_name='game_user',null=True,on_delete=models.SET_NULL)
     rank=models.IntegerField()
     score=models.IntegerField()
 
