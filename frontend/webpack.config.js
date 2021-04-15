@@ -23,8 +23,21 @@ module.exports ={
         rules:[
             {
                 loader:'ts-loader',
-                test:/\.tsx?$/
-            }
+                test:/\.tsx?$/,
+            },
+            {
+                test: /\.css$/,
+                use: [
+                  'style-loader',
+                  {
+                    loader: 'css-loader',
+                    options: {
+                  modules: true
+                    }
+                  }
+                ]
+              }
+
         ]
     }
 }

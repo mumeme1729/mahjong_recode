@@ -44,7 +44,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.GroupSerializer
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(userGroup=[self.request.user])
         
 class RateViewSet(viewsets.ModelViewSet):
     queryset = Rate.objects.all()
@@ -68,18 +68,25 @@ class GameResultsViewSet(viewsets.ModelViewSet):
     def perform_create(self,serializer):
         serializer.save()
 
-#グループメンバーのプロフィール
+#所属しているグループ一覧
 class GroupMemberProfiles(generics.ListAPIView):
     serializer_class =serializers.GroupMemberProfilesSerializer
     def get_queryset(self):
         queryset=Group.objects.filter(userGroup=self.request.user)
+        return queryset
+#選択したグループを返す
+class GroupMember(generics.ListAPIView):
+    serializer_class =serializers.GroupMemberProfilesSerializer
+    def get_queryset(self):
+        queryset=Group.objects.filter(id=self.request.query_params.get('id'))
         return queryset
 
 #グループごとの対局結果一覧
 class ResultsForEachGroup(generics.ListAPIView):
     serializer_class=serializers.ResultsForEachGroupSerializer
     def get_queryset(self):
-        queryset=Game.objects.filter(group_id=self.request.query_params.get('group_id'))
+        queryset=Game.objects.filter(group_id=self.request.query_params.get('group_id')).order_by('-created_at')
+        
         return queryset
 
     

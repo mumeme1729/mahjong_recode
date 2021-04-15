@@ -1,0 +1,46 @@
+.group_home_container{
+    background-color: blueviolet;
+}
+.group_home_body{
+    display: flex;
+    background-color: cornflowerblue;
+}
+.group_home_container_left{
+    background-color: yellow;
+    width: 50%;
+}
+.group_home_menu{
+    background-color: white;
+}
+.group_home_container_right{
+    width: 50%;
+    background-color: chartreuse;
+}
+.group_home_results{
+    background-color: crimson;
+    height: 500px;
+}
+/* ゲーム結果 */
+.gameresult_container{
+    display: flex;
+    background-color: cyan;
+}
+.gameresult_body{
+    margin-left: 20px;
+}
+/* 対局 */
+.gameresult_container:hover{
+   opacity: 0.7;
+}
+.game_body{
+    
+    margin-top: 5px;
+    width: 100px;
+}
+.game_user_btn:hover{
+    opacity: 0.7;
+}
+.game_selected_profile{
+    opacity: 0.5;
+    background-color: grey;
+}

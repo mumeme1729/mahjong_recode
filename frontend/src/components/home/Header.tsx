@@ -13,9 +13,8 @@ const Header:React.FC = () => {
             if (localStorage.localJWT) {
                 const result = await dispatch(fetchAsyncGetMyProf());//ログインしているユーザーのプロフィールを取得する
                 //await dispatch(fetchAsyncGetBelongToGroup());
-                history.push('/home');
             }else{
-                history.push('/');
+                history.push('/')
             }
         };
         fetchLoader();

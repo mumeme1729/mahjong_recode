@@ -1,0 +1,26 @@
+.home_grouplist_container{
+    display: flex;
+    justify-content: space-evenly;
+    width: 80%;
+    background-color: aqua;
+}
+
+/* グループ一覧 */
+.belong_to_group_container{
+    background-color: azure;
+    width: 200px;
+    height: 300px;
+}
+.belong_to_group_body_top{
+    height: 220px;
+    width: 200px;
+    background-color: blue;
+}
+.belong_to_group_img{
+    width: auto;
+    height: 220px;
+    max-width: 200px;
+}
+.belong_to_group_body_bottom{
+    text-align: center;
+}

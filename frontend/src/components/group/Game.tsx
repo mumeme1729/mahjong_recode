@@ -1,0 +1,290 @@
+import { Avatar, TextField,CircularProgress } from '@material-ui/core';
+import React,{useEffect,useState} from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import { AppDispatch } from '../../app/store';
+import { fetchAsyncGetGroup, selecGroup,fetchAsyncCreateGame,fetchAsyncPutRate, fetchAsyncCreateGameResults } from './groupSlice';
+import styles from "./Group.module.css";
+import { Button } from '@material-ui/core';
+import Modal from "react-modal";
+
+
+const modalStyle={
+    overlay: {
+        background: 'rgba(0, 0, 0, 0.2)',
+        zIndex:2,
+      },
+    content: {
+        
+        top: "50%",
+      left: "50%",
+      backgroundColor: 'white',
+      width: 260,
+      height: 450,
+      transform: "translate(-50%, -50%)",
+      },
+};
+
+const Game:React.FC = () => {
+    const dispatch: AppDispatch = useDispatch();
+    const history = useHistory();
+    const params = useParams<{ id: string }>();
+    const group=useSelector(selecGroup);
+    const groupmember=group.profile;
+    const [openModal,setOpenModal]=useState(false);
+    const [uma,setUma]=useState(10);
+    const [score1,setScore1]=useState<{id:number,score:number}>({id:0,score:0});
+    const [score2,setScore2]=useState<{id:number,score:number}>({id:0,score:0});
+    const [score3,setScore3]=useState<{id:number,score:number}>({id:0,score:0});
+    const [score4,setScore4]=useState<{id:number,score:number}>({id:0,score:0});
+    const [startLoad,setStartLoad]=useState(false);
+    const [memts,setMemts]=useState<number[]>([]);
+    let ratelist:{
+        rate_id: number;
+        group_id: number;
+        user_id: number;
+        rate: number;
+    }[]=[]
+    useEffect(()=>{
+        const fetchLoader = async ()=>{
+            if (localStorage.localJWT) {
+                const fetchresults=await dispatch(fetchAsyncGetGroup(params.id));
+                console.log(fetchresults.payload)
+            }
+        };
+        fetchLoader();
+    },[]);
+    
+    const setUserId=(id:number):void=>{
+        if(!memts.includes(id)){
+            setMemts([
+                ...memts,
+                id,
+            ]);
+        }else{
+            setMemts(memts.filter((i) => i !== id));
+        }
+    }
+    //選択したメンバーのプロフィール
+    const memberprofile=memts.map((m)=>{
+         return groupmember.filter((gr)=>{
+            return gr.userProfile===m;
+        })[0]
+    })
+
+    const newGame = async (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        setOpenModal(true);
+    };
+    //スコア計算
+    function culcScore(ranklist:{id:number,score:number}[]):{id:number,score:number,rank:number}[]{
+        let score:{id:number,score:number,rank:number}[]=[]
+        ratelist=[]
+        let i=1;
+        ranklist.map((rank)=>{
+            let culcscore:number=0
+            if(rank.score>=0){
+                let cscore=(rank.score+400)/1000;
+                cscore=Math.floor(cscore);
+                culcscore=cscore-30;
+            }else{
+                let cscore=(rank.score-400)/1000;
+                cscore=Math.ceil(cscore);
+                culcscore=cscore-30;
+            }
+            if(i===1){culcscore=culcscore+20+uma;}
+            if(i===2){culcscore=culcscore+(uma/2);}
+            if(i===3){culcscore=culcscore-(uma/2);}
+            if(i===4){culcscore=culcscore-uma};
+
+            let r:{id:number,score:number,rank:number}={id:rank.id,score:culcscore,rank:i}
+            console.log(culcscore);
+            i=i+1;
+            score.push(r);
+            //レート計算
+            const profile=memberprofile.filter((pro)=>{
+                return pro.userProfile===rank.id
+            })[0]
+            const rate={rate_id:profile.rate_id,group_id:profile.group_id,user_id:profile.user_id,rate:profile.rate}
+            ratelist.push(rate)
+        });
+        return score;
+    }
+
+    const recodeScore=async(e:React.MouseEvent<HTMLElement>)=>{
+        e.preventDefault();
+        setStartLoad(true);
+        let ranklist:{id:number,score:number}[]=[]
+        if(score1.score+score2.score+score3.score+score4.score===100000){
+            ranklist.push(score1,score2,score3,score4);
+            ranklist.sort(function(a, b) {
+                let comp=0;
+                if (a.score < b.score) {
+                    comp= 1;
+                } else if(a.score>b.score){
+                    comp= -1;
+                }
+                return comp;
+             });
+
+            let score=culcScore(ranklist);//計算済みのスコア
+ 
+            //レート計算
+            if(ratelist.length===4){
+                let ratesum=0;
+                ratelist.map((r)=>{
+                    ratesum+=r.rate;
+                })
+                let rateave=Math.round(ratesum/4);
+                let i=1;
+                ratelist.map((r)=>{
+                    if(i===1){r.rate=Math.round(r.rate+(50+((rateave-r.rate)/70)*0.2));}
+                    if(i===2){r.rate=Math.round(r.rate+(10+((rateave-r.rate)/70)*0.2));}
+                    if(i===3){r.rate=Math.round(r.rate+(-20+((rateave-r.rate)/70)*0.2));}
+                    if(i===4){r.rate=Math.round(r.rate+(-40+((rateave-r.rate)/70)*0.2));}
+                    i+=1;
+                });
+                ratelist.map(async(r)=>{
+                    await dispatch(fetchAsyncPutRate(r));
+                });
+            };
+            //ゲームを作る
+            const packet={group_id:params.id};
+            const results=await dispatch(fetchAsyncCreateGame(packet));
+            if(fetchAsyncCreateGame.fulfilled.match(results)){
+                results.payload.id
+                score.map(async(s)=>{
+                    const resultspacket={game_id:results.payload.id,user_id:s.id,rank:s.rank,score:s.score}
+                    await dispatch(fetchAsyncCreateGameResults(resultspacket));
+                })
+            }
+            setStartLoad(false);
+            setOpenModal(false);
+            history.push(`/group/${params.id}`)
+        };
+    }
+    const url='http://127.0.0.1:8000'
+    return (
+        <>
+            <div className={styles.game_container}>
+                対局者を選択
+                {groupmember.map((member)=>(
+                    <div key={member.id} >
+                        <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
+                            <div className={styles.game_body}>
+                                {!memts.includes(member.userProfile)
+                                ?
+                                    <div>
+                                        <div>
+                                            {member.img!==""?
+                                            <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                            :null}
+                                        </div>
+                                        <div>
+                                            {member.nickName}
+                                            {member.rate}
+                                        </div>
+                                    </div>
+                                :
+                                    <div className={styles.game_selected_profile}>
+                                        <div>
+                                            {member.img!==""?
+                                            <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                            :null}
+                                        </div>
+                                        <div>
+                                            {member.nickName}
+                                            {member.rate}
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </Button>
+                    </div>
+                ))}
+                <Button
+                    disabled={memts.length!==4}
+                    variant="contained"
+                    color="primary"
+                    onClick={newGame}
+                >
+                    対局開始
+                </Button>
+            </div>
+            <Modal
+                isOpen={openModal}
+                onRequestClose={()=>{
+                    setOpenModal(false);
+                    setMemts([]);
+                    setScore1({id:0,score:0})
+                    setScore2({id:0,score:0})
+                    setScore3({id:0,score:0})
+                    setScore4({id:0,score:0})
+                }}
+                style={modalStyle}
+                ariaHideApp={false}
+            >
+                <h2>対局結果</h2>
+                {/* {startLoad && <CircularProgress/>} */}
+                {memberprofile.length===4?
+                    <div>
+                        <div>
+                            東: {memberprofile[0].nickName}
+                            <br/>
+                            <TextField
+                                placeholder="点数"
+                                type="number"
+                                onChange={(e) => setScore1({id:memberprofile[0].userProfile,score:Number(e.target.value)})}
+                            />
+                        </div>
+                        <div>
+                            南: {memberprofile[1].nickName}
+                            <br/>
+                            <TextField
+                                placeholder="点数"
+                                type="number"
+                                onChange={(e) => setScore2({id:memberprofile[1].userProfile,score:Number(e.target.value)})}
+                            />
+                        </div>
+                        <div>
+                            西: {memberprofile[2].nickName}
+                            <br/>
+                            <TextField
+                                placeholder="点数"
+                                type="number"
+                                onChange={(e) => setScore3({id:memberprofile[2].userProfile,score:Number(e.target.value)})}
+                            />
+                        </div>
+                        <div>
+                            北: {memberprofile[3].nickName}
+                            <br/>
+                            <TextField
+                                placeholder="点数"
+                                type="number"
+                                onChange={(e) => setScore4({id:memberprofile[3].userProfile,score:Number(e.target.value)})}
+                            />
+                        </div>
+                    </div>
+                :
+                    <div> 
+                    </div>
+                }
+                <div>
+                    <p>合計:{score1.score+score2.score+score3.score+score4.score}</p>
+                    <br/>
+                    <Button
+                        disabled={score1.score+score2.score+score3.score+score4.score!==100000}
+                        variant="contained"
+                        color="primary"
+                        onClick={recodeScore}
+                    >
+                        記録
+                    </Button>
+                </div>
+            </Modal>
+        </>
+
+    )
+}
+
+export default Game

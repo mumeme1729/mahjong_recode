@@ -6,6 +6,8 @@ import {
   } from "react-router-dom";
 import Auth from './components/auth/Auth';
 import Auth_done from './components/auth/Auth_done';
+import Game from './components/group/Game';
+import GroupHome from './components/group/GroupHome';
 import Header from './components/home/Header';
 import Home from './components/home/Home';
 
@@ -19,6 +21,8 @@ function App(){
                     <Route exact path="/" component={Auth}/>
                     <Route path="/create_done" component={Auth_done}/>
                     <Route path="/home" component={Home}/>
+                    <Route exact path="/group/:id" component={GroupHome}/>
+                    <Route path="/group/:id/game" component={Game}/>
                 </Switch>
             </Router>
         </div>

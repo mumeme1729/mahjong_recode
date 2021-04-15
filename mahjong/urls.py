@@ -18,5 +18,6 @@ urlpatterns = [
     path('activate/<uuid:token>',views.UserActiveView.as_view(),name='activate'), #ユーザーの有効化
     path('loginuserprofile/', views.MyProfileListView.as_view(), name='loginuserprofile'), #ログインユーザーのプロフィール
     path('groupmember/',views.GroupMemberProfiles.as_view(),name='groupmember'), #グループメンバーのプロフィール
+    path('selectgroupmember/',views.GroupMember.as_view(),name='selectgroupmember'),#選択したグループ
     path('results/',views.ResultsForEachGroup.as_view(),name='results') # グループごとの対局結果
 ]

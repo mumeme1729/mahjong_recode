@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN} from '../types'
+import {PROPS_AUTHEN,PROPS_CREATE_GROUP} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -14,6 +14,24 @@ export const fetchAsyncGetBelongToGroup = createAsyncThunk("belongtogroup/get", 
     });
     return res.data;
   });
+
+//グループ新規作成
+export const fetchAsyncCreateGroup = createAsyncThunk(
+    "group/post",
+    async (newGroup: PROPS_CREATE_GROUP) => {
+      const groupData = new FormData();
+      groupData.append("title",newGroup.title);
+      newGroup.img && groupData.append("img", newGroup.img, newGroup.img.name);
+      const res = await axios.post(`${apiUrl}mahjong/group/`, groupData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.localJWT}`,
+        },
+      }).catch(error => {
+        console.log(error.response)
+      });
+      //return res.data;
+    });
 
 export const homeSlice=createSlice({
     name:'home',

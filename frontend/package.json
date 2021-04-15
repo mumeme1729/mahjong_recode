@@ -11,7 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/react-redux": "^7.1.16",
+    "css-loader": "^5.2.1",
     "dotenv-webpack": "^7.0.2",
+    "style-loader": "^2.0.0",
     "ts-loader": "^8.1.0",
     "typescript": "^4.2.4",
     "webpack": "^5.32.0",
@@ -20,14 +22,18 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.5.1",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "@types/react-modal": "^3.12.0",
     "@types/react-router-dom": "^5.1.7",
     "axios": "^0.21.1",
+    "css-module-types": "^0.2.2",
     "formik": "^2.2.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-modal": "^3.13.1",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "yup": "^0.32.9"

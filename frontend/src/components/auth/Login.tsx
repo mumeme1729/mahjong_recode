@@ -12,8 +12,7 @@ import {
 
 const Login:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const [sendEmail,setSendEmail]=useState(false);
-    const [successCreateAccount,setSuccessCreateAccount]=useState(false);
+    const [successLogin,setSuccessLogin]=useState(false);
     const history = useHistory();
     return (
         <div　className="auth_container">
@@ -21,9 +20,7 @@ const Login:React.FC = () => {
                 initialErrors={{ email: "required" }}
                 initialValues={{ email: "", password: ""}}                
                 onSubmit={async (values) => {
-                    // dispatch(startAuthLoad());
                     const result = await dispatch(fetchAsyncLogin(values));
-                    
                     if (fetchAsyncLogin.fulfilled.match(result)) {
                         history.push('/home')
                     }else{
@@ -52,6 +49,7 @@ const Login:React.FC = () => {
                         {/* <div className="css_styles.auth_progress">
                             {isLoadingAuth && <CircularProgress />}
                         </div> */}
+
                         <div className="">
                             <h2>ログイン</h2>
                         </div>
