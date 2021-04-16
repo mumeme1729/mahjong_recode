@@ -36,6 +36,20 @@ export const fetchAsyncCreateGame = createAsyncThunk(
     const res = await axios.post(`${apiUrl}mahjong/game/`, id, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
+      },
+    })
+    return res.data;
+  }
+);
+//ゲーム削除
+export const fetchAsyncDeleteGame = createAsyncThunk(
+  "game/delete",
+  async (id: number) => {
+    const res = await axios.delete(`${apiUrl}mahjong/game/${id}`,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
       },
     })
     return res.data;
@@ -48,6 +62,7 @@ export const fetchAsyncCreateGameResults=createAsyncThunk(
     const res = await axios.post(`${apiUrl}mahjong/gameresults/`, score, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
       },
     })
     return res.data;
@@ -60,6 +75,7 @@ export const fetchAsyncPutRate=createAsyncThunk(
     const res = await axios.put(`${apiUrl}mahjong/rate/${rate_info.rate_id}/`, rate_info, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
       },
     }).catch(error => {
       console.log(error.response)

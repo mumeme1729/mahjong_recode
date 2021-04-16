@@ -36,6 +36,7 @@ export const fetchAsyncCreateGroup = createAsyncThunk(
 export const homeSlice=createSlice({
     name:'home',
     initialState:{
+        backUrl:"",
         belongToGroup:[{
             id: 0,
             title: "",
@@ -53,7 +54,12 @@ export const homeSlice=createSlice({
         }],
     },
     reducers:{
-    
+      setBackUrl(state,action){
+        state.backUrl=action.payload;
+      },
+      resetBackUrl(state){
+        state.backUrl="";
+      }
     },
     extraReducers:(builder)=>{
         builder.addCase(fetchAsyncGetBelongToGroup.fulfilled, (state, action) => {
@@ -63,8 +69,10 @@ export const homeSlice=createSlice({
 });
 
 export const {
- 
+ setBackUrl,
+ resetBackUrl,
 } = homeSlice.actions;
 
 export const selectBelongToGroup=(state:RootState)=>state.home.belongToGroup;
+export const selectBackUrl=(state:RootState)=>state.home.backUrl;
 export default homeSlice.reducer;

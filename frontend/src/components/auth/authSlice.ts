@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN} from '../types'
+import {PROPS_AUTHEN, PROPS_PROFILE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -18,6 +18,29 @@ export const fetchAsyncRegister=createAsyncThunk(
         });
         return res.data;
       }
+);
+
+//有効化
+export const fetchAsyncActivateUser = createAsyncThunk("activate/get", async (token:string) => {
+  const res = await axios.get(`${apiUrl}mahjong/activate/${token}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res.data;
+});
+
+export const fetchAsyncCreateProf = createAsyncThunk(
+  "profile/post",
+  async (nickName: PROPS_PROFILE) => {
+    const res = await axios.post(`${apiUrl}mahjong/profile/`, nickName, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
+      },
+    });
+    return res.data;
+  }
 );
 
 //ログイン

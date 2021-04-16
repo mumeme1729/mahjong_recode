@@ -25,7 +25,7 @@ class UserActiveView(generics.ListAPIView):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = serializers.ProfileSerializer
-
+    
     #新規でプロフィールを作る
     def perform_create(self, serializer):
         serializer.save(userProfile=self.request.user)

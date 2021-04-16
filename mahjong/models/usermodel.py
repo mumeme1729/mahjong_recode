@@ -104,9 +104,14 @@ def publish_token(sender,instance,**kwargs):
 
         #メール送信
         subject = "ご登録ありがとうございます"
+        # message = f'''
+        #             以下のURLから本登録を行ってください。
+        #             http://127.0.0.1:8000/mahjong/activate/{activate_token.token}
+                    
+        #            '''
         message = f'''
                     以下のURLから本登録を行ってください。
-                    http://127.0.0.1:8000/mahjong/activate/{activate_token.token}
+                    http://localhost:8080/activate/{activate_token.token}
                     
                    '''
 

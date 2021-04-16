@@ -8,6 +8,10 @@ export interface PROPS_AUTHEN {
     password: string;
 }
 
+export interface PROPS_PROFILE{
+    nickName:string;
+}
+
 export interface PROPS_BELONG_TO_GROUP{
     id: number;
     title:string;
@@ -48,6 +52,26 @@ export interface PROPS_GAME_RESULTS{
                 img: string,
               }
           }[],
+}
+export interface PROPS_GAME_RESULTS_SCORE{
+    id: number;
+    group_id: number;
+    created_at: string;
+    results: {
+        id: number;
+        game_id: number;
+        user_id: number;
+        rank: number;
+        score: number;
+        profile: {
+            id: number;
+            nickName: string;
+            text: string;
+            userProfile: number;
+            created_on: string;
+            img: string;
+        };
+    }[];
 }
 
 export interface PROPS_CREATE_GAME{

@@ -8,6 +8,14 @@ import styles from "./Group.module.css";
 import GameResults from './GameResults';
 import { Button } from '@material-ui/core';
 import { selectLoginUserProfile } from '../auth/authSlice';
+import { 
+    FacebookShareButton, 
+    FacebookIcon,
+    TwitterShareButton, 
+    TwitterIcon,
+    LineShareButton,
+    LineIcon,
+} from 'react-share'
 
 const GroupHome:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -23,10 +31,7 @@ const GroupHome:React.FC = () => {
                 const fetchresults=await dispatch(fetchAsyncGetGroup(params.id));
                 await dispatch(fetchAsyncGetGameResults(params.id));
                 //参加していない場合
-                if(fetchresults.payload.profile===null){
-                    console.log('null')
-                    history.push('/home')
-                }
+                
                 // else if(!fetchresults.payload.profile.some(loginUserProfile)){
                 //     console.log(fetchresults.payload.profile)
                 //     console.log(loginUserProfile)
@@ -38,11 +43,23 @@ const GroupHome:React.FC = () => {
     },[]);
 
 
-    
+    console.log(group)
     return (
         <div className={styles.group_home_container}>
             <div className={styles.group_home_body}>
                 <div className={styles.group_home_container_left}>
+                    <Button onClick={()=>history.push('/home')}>戻る</Button>
+                    <FacebookShareButton url={`http://localhost:8080/group/${params.id}`}>
+                        <FacebookIcon  round />
+                    </FacebookShareButton>
+                    <TwitterShareButton url={`http://localhost:8080/group/${params.id}`}>
+                        <TwitterIcon  round />
+                    </TwitterShareButton>
+                    <LineShareButton url={`http://localhost:8080/group/${params.id}`}>
+                        <LineIcon/>
+                    </LineShareButton>
+                    <Button onClick={()=>{}}>グループに参加</Button>
+                    <br/>
                     <img src={group.img}/>
                     {group.title}
                     <br/>
@@ -51,15 +68,11 @@ const GroupHome:React.FC = () => {
                             対局
                         </Button>
                         <br/>
-                        <Button onClick={()=>{}}>
+                        <Button onClick={()=>{history.push(`/group/${params.id}/member`)}}>
                             メンバー
                         </Button>
                         <br/>
-                        <Button onClick={()=>{}}>
-                            ランキング
-                        </Button>
-                        <br/>
-                        <Button onClick={()=>{}}>
+                        <Button onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
                             対局記録
                         </Button>
                     </div>

@@ -1,26 +1,31 @@
-import React,{useState} from 'react'
-import { AppDispatch } from "../../app/store";
-import { useSelector, useDispatch } from "react-redux";
-import { Formik } from "formik";
-import {Button,TextField} from "@material-ui/core";
-import {Link,useHistory, useLocation} from 'react-router-dom';
+import { Button, TextField } from '@material-ui/core';
+import { Formik } from 'formik';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import { AppDispatch } from '../../app/store';
+import { fetchAsyncActivateUser, fetchAsyncCreateProf, fetchAsyncGetMyProf, fetchAsyncLogin } from './authSlice';
 import * as Yup from "yup";
-import {
-    setOpenSignIn,
-    fetchAsyncLogin,
-    fetchAsyncGetMyProf,
-    fetchAsyncCreateProf
-} from './authSlice';
 import { resetBackUrl, selectBackUrl } from '../home/homeSlice';
 
-const Login:React.FC = () => {
+const Activate:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const [successLogin,setSuccessLogin]=useState(false);
     const history = useHistory();
-    const location = useLocation();
+    const params = useParams<{ token: string }>();
     const backurl=useSelector(selectBackUrl);
+    useEffect(()=>{
+        const fetchLoader = async ()=>{
+            console.log(params.token)
+            if(params.token!==""){
+              const result=  await dispatch(fetchAsyncActivateUser(params.token));   
+            }
+        };
+        fetchLoader();
+    },[]);
     return (
+
         <div　className="auth_container">
+            登録が完了しました。以下のログインフォームよりログインしてください
             <Formik
                 initialErrors={{ email: "required" }}
                 initialValues={{ email: "", password: ""}}
@@ -28,15 +33,16 @@ const Login:React.FC = () => {
                 onSubmit={async (values) => {
                     const result = await dispatch(fetchAsyncLogin(values));
                     if (fetchAsyncLogin.fulfilled.match(result)) {
-                        const login=await dispatch(fetchAsyncGetMyProf());
-                        if(login.payload.length===0){
-                            await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
-                        }
-                        if(backurl===""){
-                            history.push('/home');
-                        }else{
-                            history.push(backurl);
-                            dispatch(resetBackUrl());
+                        const res=await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
+                        if(fetchAsyncCreateProf.fulfilled.match(res)){
+                            console.log(backurl);
+                            console.log("ラスト")
+                            if(backurl===""){
+                                history.push('/home');
+                            }else{
+                                history.push(backurl);
+                                dispatch(resetBackUrl());
+                            }
                         }
                     }else{
                         values.email="";
@@ -100,13 +106,7 @@ const Login:React.FC = () => {
                                 
                                 <div className="">
                                     <Button variant="contained" color="primary" disabled={!isValid} type="submit">ログイン</Button>
-                                    <div className="">
-                                        <span onClick={async () => {
-                                            dispatch(setOpenSignIn());              
-                                        }}>
-                                            アカウントをお持ちでない方はこちら
-                                        </span>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </form>
@@ -117,4 +117,8 @@ const Login:React.FC = () => {
     )
 }
 
-export default Login
+export default Activate
+function dispatch(arg0: any) {
+    throw new Error('Function not implemented.');
+}
+
