@@ -166,6 +166,9 @@ const Game:React.FC = () => {
     const url='http://127.0.0.1:8000'
     return (
         <>
+            <br/>
+            <br/>
+            <br/>
             <div className={styles.game_container}>
                 対局者を選択
                 {groupmember.map((member)=>(

@@ -33,7 +33,6 @@ const MatchRecord:React.FC = () => {
     },[]);
 
     const selectgameresults=gameresults.filter((result)=>{
-        console.log(date)
         return result.created_at.includes(date)
     });
 
@@ -79,6 +78,9 @@ const MatchRecord:React.FC = () => {
     const classes = useStyles();
     return (
         <div>
+            <br/>
+            <br/>
+            <br/>
             <TextField
                 id="date"
                 label="記録検索"

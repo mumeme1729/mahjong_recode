@@ -1,4 +1,4 @@
-import React,{ useEffect,useState } from 'react'
+import React,{ useEffect,useLayoutEffect,useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
 import { AppDispatch } from "../../app/store";
@@ -14,7 +14,7 @@ const Home:React.FC = () => {
     const history = useHistory();
     const loginUserProfile=useSelector(selectLoginUserProfile);
     const belongtogroup=useSelector(selectBelongToGroup);
-
+    
     useEffect(()=>{
         const fetchLoader = async ()=>{
             //ログインしていたら
@@ -30,20 +30,16 @@ const Home:React.FC = () => {
     },[]);
 
     return (
-        <div>
-            <div>
-            {loginUserProfile.img}
-                <Avatar alt="who?" src={loginUserProfile.img} style={{height:'70px',width:'70px'}}/>
-            </div>
-            <div>
-                <p>{loginUserProfile.nickName}</p>  
-            </div>
-                <Search/>
+        <div className={styles.home_container}>
+
+            <Search/>
+            {belongtogroup.length!==0 && belongtogroup[0].id!==0?
             <div className={styles.home_grouplist_container}>
                 {belongtogroup.map((group)=>(
                     <BelongToGroupList key={group.id} {...group}/>
                 ))}
             </div>
+            :<>参加しているグループはありません</>}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN, PROPS_PROFILE} from '../types'
+import {PROPS_AUTHEN, PROPS_PROFILE, PROPS_UPDATE_PROFILE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -29,7 +29,7 @@ export const fetchAsyncActivateUser = createAsyncThunk("activate/get", async (to
   });
   return res.data;
 });
-
+//プロフィール作成
 export const fetchAsyncCreateProf = createAsyncThunk(
   "profile/post",
   async (nickName: PROPS_PROFILE) => {
@@ -42,7 +42,23 @@ export const fetchAsyncCreateProf = createAsyncThunk(
     return res.data;
   }
 );
-
+//アップデート(プロフィール以外)
+export const fetchAsyncUpdateProf = createAsyncThunk(
+  "profile/put",
+  async (profile:PROPS_UPDATE_PROFILE) => {
+    const res = await axios.put(
+      `${apiUrl}mahjong/profile/${profile.id}/`,
+      profile,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.localJWT}`,
+        },
+      }
+    );
+    return res.data;
+  }
+);
 //ログイン
 export const fetchAsyncLogin = createAsyncThunk(
     "auth/post",
@@ -76,7 +92,7 @@ export const authSlice=createSlice({
         nickName: "",
         text:"",
         userProfile: 0,
-        created_on: "",
+        created_at: "",
         img: "",
       },
     },
@@ -95,7 +111,10 @@ export const authSlice=createSlice({
         });
         builder.addCase(fetchAsyncGetMyProf.fulfilled, (state, action) => {
           state.login_user_profile = action.payload;
-        });     
+        }); 
+        builder.addCase(fetchAsyncUpdateProf.fulfilled, (state, action) => {
+          state.login_user_profile = action.payload;
+      });    
     },
 });
 

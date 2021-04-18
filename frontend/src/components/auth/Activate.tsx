@@ -1,6 +1,6 @@
 import { Button, TextField } from '@material-ui/core';
 import { Formik } from 'formik';
-import React, { useEffect } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppDispatch } from '../../app/store';

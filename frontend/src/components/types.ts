@@ -11,7 +11,11 @@ export interface PROPS_AUTHEN {
 export interface PROPS_PROFILE{
     nickName:string;
 }
-
+export interface PROPS_UPDATE_PROFILE{
+    id:number;
+    nickName:string;
+    text:string;
+}
 export interface PROPS_BELONG_TO_GROUP{
     id: number;
     title:string;

@@ -27,7 +27,9 @@ const GroupMember:React.FC = () => {
     const url='http://127.0.0.1:8000'
     return (
         <div>
-            
+            <br/>
+            <br/>
+            <br/>
             {groupmember.map((mem)=>(
                 <div key={mem.id}>
                     <div>

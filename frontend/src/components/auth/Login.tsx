@@ -32,7 +32,9 @@ const Login:React.FC = () => {
                         if(login.payload.length===0){
                             await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
                         }
-                        if(backurl===""){
+                        console.log(backurl)
+                        if(!backurl.includes('/group')){
+                            console.log('go home')
                             history.push('/home');
                         }else{
                             history.push(backurl);

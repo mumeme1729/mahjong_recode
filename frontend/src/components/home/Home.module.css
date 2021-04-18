@@ -1,3 +1,27 @@
+/* ヘッダー */
+.header_container{
+   height: 70px; 
+   /* position:fixed; */
+   background-color: white;
+   width: 100%;
+   margin-top: -8px;
+   /* z-index: 1; */
+}
+.header_body{
+    display: flex;
+    justify-content: space-between;
+    background-color: tomato;
+    width: 100%;
+}
+.header_body_left{
+    margin-left: 5%;
+}
+.header_body_right{
+    display: flex;
+    margin-right: 5%;
+}
+/* ホーム */
+
 .home_grouplist_container{
     display: flex;
     justify-content: space-evenly;
@@ -23,4 +47,38 @@
 }
 .belong_to_group_body_bottom{
     text-align: center;
+}
+/* イメージトリミング */
+.image_trimming_container{
+    position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 260px;
+  height: 450px;
+	margin: 'auto';
+}
+.image_tring_select{
+    background-color: white;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 260px;
+    transform: translateX(-50%);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    
+}
+.image_trimming_body{
+    top:0;
+    left:0;
+    right:0;
+    bottom: 10px; 
+    position: absolute;
+}
+.profile_image_icon_input{
+    display: none;
 }
