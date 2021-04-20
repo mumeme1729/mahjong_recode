@@ -9,6 +9,8 @@ class Group(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
     title=models.CharField(max_length=30)
     img = models.ImageField(blank=True, null=True, upload_to=upload_group_path)
+    text=models.CharField(max_length=200,blank=True,null=True)
+    password=models.CharField(max_length=200,blank=True,null=True)
     userGroup=models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='group_user',blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

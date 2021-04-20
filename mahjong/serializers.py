@@ -32,7 +32,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model=Group
-        fields=('id','title','img','userGroup')
+        fields=('id','title','text','password','img','userGroup')
 
 #グループごとのレート
 class RateSerializer(serializers.ModelSerializer):
@@ -70,7 +70,7 @@ class GroupMemberProfilesSerializer(serializers.ModelSerializer):
     profile=serializers.SerializerMethodField()
     class Meta:
         model=Group
-        fields=('id','title','img','profile')
+        fields=('id','title','text','password','img','profile')
     
     def get_profile(self,obj):
         profiles=[]

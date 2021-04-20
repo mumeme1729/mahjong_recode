@@ -70,14 +70,12 @@ const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
     return (
         <div className={styles.gameresult_container}>
             {results.map((result=>(
-                
                 <div key={result.id} className={styles.gameresult_body}>
                     {result.rank}位
                     {result.score}
                     {result.profile.nickName}
                     <br/>
-                </div>
-                
+                </div>  
             )))}
 
             <button　onClick={()=>{deletegame(results[0].game_id)}}>

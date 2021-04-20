@@ -13,7 +13,7 @@ export const fetchAsyncGetBelongToGroup = createAsyncThunk("belongtogroup/get", 
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     });
-    return res.data;
+    return res.data.reverse();
   });
 
 //グループ新規作成
@@ -22,16 +22,16 @@ export const fetchAsyncCreateGroup = createAsyncThunk(
     async (newGroup: PROPS_CREATE_GROUP) => {
       const groupData = new FormData();
       groupData.append("title",newGroup.title);
+      groupData.append("text",newGroup.text);
+      groupData.append("password",newGroup.password);
       newGroup.img && groupData.append("img", newGroup.img, newGroup.img.name);
       const res = await axios.post(`${apiUrl}mahjong/group/`, groupData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `JWT ${localStorage.localJWT}`,
         },
-      }).catch(error => {
-        console.log(error.response)
-      });
-      //return res.data;
+      })
+      return res.data;
     });
 
 export const homeSlice=createSlice({
@@ -43,6 +43,8 @@ export const homeSlice=createSlice({
         belongToGroup:[{
             id: 0,
             title: "",
+            text:"",
+            password:"",
             img:"",
             profile:[
                 {
@@ -80,6 +82,12 @@ export const homeSlice=createSlice({
         builder.addCase(fetchAsyncGetBelongToGroup.fulfilled, (state, action) => {
             state.belongToGroup = action.payload;
         });
+        builder.addCase(fetchAsyncCreateGroup.fulfilled, (state, action) => {
+          return {
+            ...state,
+            belongToGroup: [ action.payload,...state.belongToGroup],
+        };
+      });
     },
 });
 

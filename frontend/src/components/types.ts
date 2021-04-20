@@ -16,6 +16,21 @@ export interface PROPS_UPDATE_PROFILE{
     nickName:string;
     text:string;
 }
+export interface PROPS_UPDATE_PROFILE_IMAGE{
+    id:number;
+    nickName: string;
+    text:string;
+    img:File | null;
+    name:string;
+}
+export interface PROPS_PARTICIPATION{
+    id:number;
+    userGroup:number[];
+}
+export interface PROPS_CREATE_RATE{
+    group_id:number;
+    user_id:number;
+}
 export interface PROPS_BELONG_TO_GROUP{
     id: number;
     title:string;
@@ -32,6 +47,8 @@ export interface PROPS_BELONG_TO_GROUP{
 
 export interface PROPS_CREATE_GROUP{
     title:string;
+    text:string;
+    password:string;
     img:File|null;
 }
 
@@ -102,4 +119,18 @@ export interface PROPS_CREATE_GAME_RESLTS{
     user_id:number;
     rank:number;
     score:number;
+}
+export interface PROPS_UPDATE_GROUP{
+    id:number;
+    title:string;
+    text:string;
+    password:string;
+}
+export interface PROPS_UPDATE_GROUP_IMAGE{
+    id:number;
+    title:string;
+    text:string;
+    password:string;
+    img:File | null;
+    name:string;
 }

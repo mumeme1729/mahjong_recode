@@ -34,10 +34,12 @@ const Profile:React.FC = () => {
     const updateProfile = async () => {
         const packet = { id: profile.id, nickName: name,text:text};
         await dispatch(fetchAsyncUpdateProf(packet));   
+        dispatch(resetOpenProfile());
     };
     function logout(){
         localStorage.removeItem("localJWT");
         dispatch(resetBackUrl());
+        dispatch(resetOpenProfile());
         history.push('/');
     }
     return (
@@ -50,7 +52,7 @@ const Profile:React.FC = () => {
             ariaHideApp={false}
             >
             <div>
-                <form>
+                
                     <h2>プロフィールを編集</h2>
                     <div>
                         <Button onClick={()=>{dispatch(setImageTrimming())}}>
@@ -58,19 +60,19 @@ const Profile:React.FC = () => {
                         </Button>
                         <ImageTrimming/>
                         <div>
-                            <TextField placeholder="名前" type="text" defaultValue={name} label="名前"
+                            <TextField placeholder="名前" type="text" defaultValue={profile.nickName} label="名前"
                                 onChange={(e) => setName(e.target.value)}/>
                         </div>
                     </div>
                     <br />
-                    <TextField placeholder="自己紹介" type="text" defaultValue={text} multiline fullWidth label="自己紹介"
+                    <TextField placeholder="自己紹介" type="text" defaultValue={profile.text} multiline fullWidth label="自己紹介"
                         onChange={(event) => setText(event.target.value)}/>
                     <br />
                     <br />
                     
                     <div>
                         <Button
-                            disabled={!profile?.nickName}
+                            disabled={!name}
                             variant="contained"
                             color="primary"
                             type="submit"
@@ -79,10 +81,9 @@ const Profile:React.FC = () => {
                             プロフィール更新
                         </Button>
                     </div>
-                </form>
+                
                 <div>
                     <Button
-                        disabled={!profile?.nickName}
                         variant="contained"
                         color="primary"
                         type="submit"

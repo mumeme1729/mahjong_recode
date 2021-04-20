@@ -56,7 +56,7 @@
   right: 0;
   bottom: 0;
   width: 260px;
-  height: 450px;
+  height: 480px;
 	margin: 'auto';
 }
 .image_tring_select{
@@ -67,7 +67,7 @@
     left: 50%;
     width: 260px;
     transform: translateX(-50%);
-    height: 60px;
+    height: 30px;
     display: flex;
     align-items: center;
     
@@ -76,9 +76,17 @@
     top:0;
     left:0;
     right:0;
-    bottom: 10px; 
+    bottom: 40px; 
     position: absolute;
 }
 .profile_image_icon_input{
     display: none;
+}
+.image_slider{
+    position: absolute;
+    top: 95%;
+    left: 30%;
+    width: 220px;
+    
+    transform: translate(-30%,80%);
 }

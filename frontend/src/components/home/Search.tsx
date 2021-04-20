@@ -7,6 +7,8 @@ import PhotoIcon from '@material-ui/icons/Photo';
 import { File } from "../types";
 import { AppDispatch } from '../../app/store';
 import { fetchAsyncCreateGroup } from './homeSlice';
+import { selectLoginUserProfile } from '../auth/authSlice';
+import { fetchAsyncCreateRate, fetchAsyncParticipationGroup } from '../group/groupSlice';
 
 const modalStyle={
     overlay: {
@@ -29,8 +31,11 @@ const Search:React.FC = () => {
     const [group,setGroup]=useState("");
     const [openModal,setOpenModal]=useState<boolean>(false);
     const [groupName,setGroupName]=useState("")
+    const [text,setText]=useState("")
+    const [password,setPassword]=useState("")
     const [image, setImage] = useState<File | null>(null);
-
+    const loginuserprofile=useSelector(selectLoginUserProfile);
+    
     let url="";
     const handlerEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
@@ -38,12 +43,29 @@ const Search:React.FC = () => {
     };
 
     const newGroup = async (e: React.MouseEvent<HTMLElement>) => {
+        console.log("サーチ")
         e.preventDefault();
-        const packet = { title: groupName, img: image,};
+        const packet = { title: groupName,text:text,password:password,img: image,};
+        console.log(packet)
         const results=await dispatch(fetchAsyncCreateGroup(packet));
-        console.log(results.payload)
+        const group_id=results.payload.id;
+        console.log(group_id)
+        if(fetchAsyncCreateGroup.fulfilled.match(results)){
+            let member:number[]=[]
+            member.push(loginuserprofile.userProfile);
+            console.log(member)
+            const pkt={id:group_id,userGroup:member}
+            const results=await dispatch(fetchAsyncParticipationGroup(pkt));
+            console.log(fetchAsyncParticipationGroup.fulfilled.match(results))
+            if(fetchAsyncParticipationGroup.fulfilled.match(results)){
+                console.log("rate")
+                const rate_pkt={group_id:group_id,user_id:loginuserprofile.userProfile}
+                await dispatch(fetchAsyncCreateRate(rate_pkt));
+            }   
+        }
         setGroupName("");
         setImage(null);
+        setOpenModal(false);
     };
 
       if(image!==null){
@@ -82,6 +104,18 @@ const Search:React.FC = () => {
                         placeholder="グループ名"
                         type="text"
                         onChange={(e) => setGroupName(e.target.value)}
+                    />
+                    <br/>
+                    <TextField
+                        placeholder="紹介文"
+                        type="text"
+                        onChange={(e) => setText(e.target.value)}
+                    />
+                    <br/>
+                    <TextField
+                        placeholder="パスワード"
+                        type="text"
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <input
                         type="file"

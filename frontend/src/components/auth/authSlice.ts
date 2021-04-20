@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN, PROPS_PROFILE, PROPS_UPDATE_PROFILE} from '../types'
+import {PROPS_AUTHEN, PROPS_PROFILE, PROPS_UPDATE_PROFILE, PROPS_UPDATE_PROFILE_IMAGE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -56,6 +56,27 @@ export const fetchAsyncUpdateProf = createAsyncThunk(
         },
       }
     );
+    return res.data;
+  }
+);
+export const fetchAsyncUpdateProfImage = createAsyncThunk(
+  "profileimage/put",
+  async (profileimage:PROPS_UPDATE_PROFILE_IMAGE ) => {
+    const uploadData = new FormData();
+    uploadData.append("nickName", profileimage.nickName);
+    uploadData.append("text", profileimage.text);
+    profileimage.img &&uploadData.append("img",profileimage.img,profileimage.name);
+    const res = await axios.put(
+      `${apiUrl}mahjong/profile/${profileimage.id}/`,
+      uploadData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.localJWT}`,
+        },
+      }
+    )
+    
     return res.data;
   }
 );
@@ -114,7 +135,10 @@ export const authSlice=createSlice({
         }); 
         builder.addCase(fetchAsyncUpdateProf.fulfilled, (state, action) => {
           state.login_user_profile = action.payload;
-      });    
+        });    
+        builder.addCase(fetchAsyncUpdateProfImage.fulfilled,(state,action)=>{
+          state.login_user_profile=action.payload;
+        }); 
     },
 });
 

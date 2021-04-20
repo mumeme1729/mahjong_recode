@@ -4,15 +4,15 @@ import Modal from "react-modal";
 import Cropper from 'react-easy-crop'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '../../app/store'
-import { resetImageTrimming, selectIsOpenImageTrimming } from './homeSlice'
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
-import styles from "./Home.module.css";
+import styles from "../home/Home.module.css";
 import { fetchAsyncUpdateProfImage, selectLoginUserProfile } from '../auth/authSlice';
+import { fetchAsyncUpdateGroupImage, resetOpenGroupImageTrimming, selecGroup, selectOpenGroupImageTrimming } from './groupSlice';
 
 const modalStyle={
     overlay: {
         background: 'rgba(0, 0, 0, 0.2)',
-        zIndex:99,
+        zIndex:100,
       },
     content: {
         
@@ -20,18 +20,19 @@ const modalStyle={
       left: "50%",
       backgroundColor: 'white',
       width: 260,
-      height: 450,
+      height: 480,
       transform: "translate(-50%, -50%)",
       },
 };
 
-const ImageTrimming:React.FC = () => {
+const GroupImageTrimming:React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const isopenimagetrimming=useSelector(selectIsOpenImageTrimming);
+  const isopengroupimagetrimming=useSelector(selectOpenGroupImageTrimming);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
-  const profile=useSelector(selectLoginUserProfile);
+  //const profile=useSelector(selectLoginUserProfile);
+  const group=useSelector(selecGroup);
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
     console.log(croppedAreaPixels)
@@ -96,13 +97,13 @@ const getCroppedImg=async(imageSrc: any, pixelCrop: { width: number; height: num
 }
 
 async function updateImage(croppedImage:any){
-    const name:string=String(profile.id)+String(Date.now())+".jpg";
+    const name:string=String(group.id)+String(Date.now())+".jpg";
     if(createImage!==null){
         const newImage=new File([croppedImage],name,{type:"image/jpg",lastModified:Date.now()});
-        const packet = { id: profile.id,nickName:profile.nickName,text:profile.text,img: newImage,name:name,};
-        const results=await dispatch(fetchAsyncUpdateProfImage(packet)); 
-        if(fetchAsyncUpdateProfImage.fulfilled.match(results)){
-            dispatch(resetImageTrimming());
+        const packet = { id: group.id,title:group.title,text:group.text,password:group.password,img: newImage,name:name,};
+        const results=await dispatch(fetchAsyncUpdateGroupImage(packet)); 
+        if(fetchAsyncUpdateGroupImage.fulfilled.match(results)){
+            dispatch(resetOpenGroupImageTrimming());
         }
     }  
 };
@@ -122,9 +123,9 @@ const handlerEditPicture = () => {
   
   return (
         <Modal
-            isOpen={isopenimagetrimming}
+            isOpen={isopengroupimagetrimming}
             onRequestClose={async () => {
-                dispatch(resetImageTrimming());
+                dispatch(resetOpenGroupImageTrimming());
             }}
             style={modalStyle}
             ariaHideApp={false}
@@ -135,22 +136,11 @@ const handlerEditPicture = () => {
                     image={src}
                     crop={crop}
                     zoom={zoom}
-                    aspect={1 / 1}
+                    aspect={2 / 2.4}
                     onCropChange={setCrop}
                     onCropComplete={onCropComplete}
                     onZoomChange={setZoom}
                     />
-                    <div>
-                        {/* <Slider
-                        value={zoom}
-                        min={1}
-                        max={3}
-                        step={0.1}
-                        aria-labelledby="Zoom"
-                        //onChange={(e,zoom) => setZoom(zoom)}
-                        classes={{ root: 'slider' }}
-                        /> */}
-                    </div>
                     <div className={styles.image_tring_select}>
                         <input type="file" id="editInputImage" className={styles.profile_image_icon_input}
                             accept=".jpg,.gif,.png,image/gif,image/jpeg,image/png"
@@ -169,10 +159,31 @@ const handlerEditPicture = () => {
                         適応
                         </Button>
                     </div>
+                    <div className={styles.image_slider}>
+                        <Slider
+                            value={zoom}
+                            min={1}
+                            max={4}
+                            step={0.1}
+                            aria-labelledby="Zoom"
+                            onChange={(e,zoom) => {
+                                let z=Number(zoom)
+                                setZoom(z)
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </Modal>
     )
 }
 
-export default ImageTrimming
+export default GroupImageTrimming
+
+function selectIsOpenGroupImageTrimming(selectIsOpenGroupImageTrimming: any) {
+    throw new Error('Function not implemented.');
+}
+function resetGroupImageTrimming(): any {
+    throw new Error('Function not implemented.');
+}
+
