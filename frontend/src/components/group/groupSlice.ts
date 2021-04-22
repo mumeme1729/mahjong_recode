@@ -156,6 +156,22 @@ export const fetchAsyncPutRate=createAsyncThunk(
     //return res.data;
   }
 );
+//選択したユーザー
+export const fetchAsyncGetSelectProfile=createAsyncThunk(
+  "selectprof/get",
+  async(id:string)=>{
+    const res=await axios.get(`${apiUrl}mahjong/selectuserprofile/`,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
+      },
+      params:{
+        id:`${id}`,
+      },
+    });
+    return res.data[0];
+  }
+);
 
 export const groupSlice=createSlice({
     name:'home',
@@ -208,6 +224,15 @@ export const groupSlice=createSlice({
             ],
           },
         ],
+        profile:
+          {
+            id: 0,
+            nickName: "",
+            text:"",
+            userProfile: 0,
+            created_on: "",
+            img: "",
+          }
     },
     reducers:{
       setOpenSettings(state) {
@@ -226,6 +251,10 @@ export const groupSlice=createSlice({
     extraReducers:(builder)=>{
       builder.addCase(fetchAsyncGetGroup.fulfilled, (state, action) => {
         state.group = action.payload;
+      });
+      builder.addCase(fetchAsyncGetSelectProfile.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.profile = action.payload;
       });
       builder.addCase(fetchAsyncGetGameResults.fulfilled, (state, action) => {
         state.gameresults = action.payload;
@@ -256,4 +285,5 @@ export const selecGroup=(state:RootState)=>state.group.group;
 export const selectGameResults=(state:RootState)=>state.group.gameresults;
 export const selectOpenSettings=(state:RootState)=>state.group.isOpenSettings;
 export const selectOpenGroupImageTrimming=(state:RootState)=>state.group.isopengroupimagetrimming;
+export const selectSelectProfile=(state:RootState)=>state.group.profile;
 export default groupSlice.reducer;

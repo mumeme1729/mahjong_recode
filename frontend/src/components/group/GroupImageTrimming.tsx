@@ -136,7 +136,7 @@ const handlerEditPicture = () => {
                     image={src}
                     crop={crop}
                     zoom={zoom}
-                    aspect={2 / 2.4}
+                    aspect={1.5 / 1.7}
                     onCropChange={setCrop}
                     onCropComplete={onCropComplete}
                     onZoomChange={setZoom}

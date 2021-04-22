@@ -5,7 +5,8 @@ import { AppDispatch } from "../../app/store";
 import { fetchAsyncGetMyProf, selectLoginUserProfile } from '../auth/authSlice';
 import { fetchAsyncGetBelongToGroup, resetBackUrl, setBackUrl, setOpenProfile } from './homeSlice';
 import styles from "./Home.module.css";
-import { Avatar, Button, ListItemIcon, ListItemText, Menu, MenuItem, MenuProps, withStyles } from '@material-ui/core';
+import { Avatar, Button} from '@material-ui/core';
+import img from './same.svg'
 import Profile from './Profile';
 
 
@@ -16,6 +17,7 @@ const Header:React.FC = () => {
     const params = useParams();
     const location = useLocation();
     const loginUserProfile=useSelector(selectLoginUserProfile);
+    
     useEffect(()=>{
         const fetchLoader = async ()=>{
             //ログインしていたら
@@ -48,7 +50,8 @@ const Header:React.FC = () => {
             <div className={styles.header_container}>
                 <div className={styles.header_body}>
                     <div className={styles.header_body_left}>
-                        <h3>ヘッダー</h3>
+                        <h3 className={styles.header_title_h3}>グループ麻雀レコード</h3>
+                        <img src={img} width="70px" height="70px"/>
                     </div>
                     <div className={styles.header_body_right}>
                         <div>

@@ -82,6 +82,7 @@ class GroupMemberProfilesSerializer(serializers.ModelSerializer):
                 profiles.append(profile_abstruct_contents)
         
         if len(profiles)!=0:
+            profiles=sorted(profiles, key=lambda x: -x['rate'])
             return profiles
         else:
             return None

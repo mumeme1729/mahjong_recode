@@ -9,7 +9,7 @@ router.register('profile',views.ProfileViewSet) #プロフィール作成
 router.register('group',views.GroupViewSet) #グループ作成
 router.register('game',views.GameViewSet) #対局作成
 router.register('gameresults',views.GameResultsViewSet) #対局結果作成
-router.register('rate',views.RateViewSet)
+router.register('rate',views.RateViewSet)#レート
 
 
 urlpatterns = [
@@ -17,6 +17,7 @@ urlpatterns = [
     path('register/', views.CreateUserView.as_view(), name='register'), #ユーザー登録
     path('activate/<uuid:token>',views.UserActiveView.as_view(),name='activate'), #ユーザーの有効化
     path('loginuserprofile/', views.MyProfileListView.as_view(), name='loginuserprofile'), #ログインユーザーのプロフィール
+    path('selectuserprofile/',views.SelectProfileListView.as_view(),name='selectuserprofile'),
     path('groupmember/',views.GroupMemberProfiles.as_view(),name='groupmember'), #グループメンバーのプロフィール
     path('selectgroupmember/',views.GroupMember.as_view(),name='selectgroupmember'),#選択したグループ
     path('results/',views.ResultsForEachGroup.as_view(),name='results') # グループごとの対局結果

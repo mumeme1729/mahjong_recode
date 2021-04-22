@@ -39,7 +39,7 @@ class GameResults(models.Model):
 class Rate(models.Model):
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False,db_index=True)
     group_id=models.ForeignKey(Group,related_name='group_rate_id',on_delete=models.CASCADE)
-    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,related_name='game_rate_user',on_delete=models.CASCADE)
+    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,related_name='game_rate_user',null=True,on_delete=models.SET_NULL)
     rate=models.IntegerField(default=1500)
 
     class Meta:

@@ -1,10 +1,14 @@
+
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppDispatch } from '../../app/store';
 import { PROPS_GAME_RESULTS } from '../types'
-import styles from "./Group.module.css";
 import { fetchAsyncDeleteGame, fetchAsyncPutRate, selecGroup, selectGameResults } from './groupSlice';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import styles from "./Group.module.css";
+import { TableRow } from '@material-ui/core';
 
 const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
     const history = useHistory();
@@ -59,29 +63,21 @@ const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
                 });
             }
         })
-        console.log(rate)
-        rate.map(async(r)=>{
-            await dispatch(fetchAsyncPutRate(r));
-        });
-        await dispatch(fetchAsyncDeleteGame(id));
-        // history.push(`/group/${params.id}`)
+    rate.map(async(r)=>{
+        await dispatch(fetchAsyncPutRate(r));
+    });
+    await dispatch(fetchAsyncDeleteGame(id));
+    // history.push(`/group/${params.id}`)
     }
     
     return (
-        <div className={styles.gameresult_container}>
-            {results.map((result=>(
-                <div key={result.id} className={styles.gameresult_body}>
-                    {result.rank}位
-                    {result.score}
-                    {result.profile.nickName}
-                    <br/>
-                </div>  
-            )))}
-
-            <button　onClick={()=>{deletegame(results[0].game_id)}}>
-                    けす
-            </button>
-        </div>
+        <>
+            <TableRow className={styles.gameresult_container}>
+                {results.map((result=>(
+                    <TableCell component="th" scope="row" key={result.id}  ><p className={styles.results_table_p}>{result.score}</p> <p className={styles.results_table_p}>{result.profile.nickName}</p></TableCell> 
+                )))}
+            </TableRow>
+        </>
     )
 }
 

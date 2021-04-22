@@ -37,6 +37,12 @@ class MyProfileListView(generics.ListAPIView):
     def get_queryset(self):
         queryset=Profile.objects.filter(userProfile=self.request.user)
         return queryset
+class SelectProfileListView(generics.ListAPIView):
+    serializer_class = serializers.ProfileSerializer
+    #ログインしているユーザーのプロフィールを返す
+    def get_queryset(self):
+        queryset=Profile.objects.filter(userProfile=self.request.query_params.get('id'))
+        return queryset
 
 #グループ
 class GroupViewSet(viewsets.ModelViewSet):

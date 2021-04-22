@@ -3,9 +3,9 @@ import Modal from "react-modal";
 import { AppDispatch } from "../../app/store";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAsyncUpdateGroup, resetOpenSettings, selecGroup, selectOpenGroupImageTrimming, selectOpenSettings, setOpenGroupImageTrimming } from './groupSlice';
-import { Button, TextField } from '@material-ui/core';
+import { Button, IconButton, TextField } from '@material-ui/core';
 import GroupImageTrimming from './GroupImageTrimming';
-
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 const modalStyle={
     overlay: {
         background: 'rgba(0, 0, 0, 0.2)',
@@ -31,7 +31,6 @@ const GroupSettings:React.FC = () => {
     const [password,setPassword]=useState("")
 
     const updateGroup = async () => {
-        console.log("アップデート")
         let updateTitle=title;
         let updateText=text;
         let updatePassword=password;
@@ -44,7 +43,7 @@ const GroupSettings:React.FC = () => {
         await dispatch(fetchAsyncUpdateGroup(packet));   
         dispatch(resetOpenSettings());
     };
-
+    
     return (
         <Modal
             isOpen={isopensettings}
@@ -53,8 +52,13 @@ const GroupSettings:React.FC = () => {
             }}
             style={modalStyle}
             ariaHideApp={false}
-        >
-            <img src={group.img} onClick={()=>{dispatch(setOpenGroupImageTrimming())}} />
+        >   
+            {group.img!==null?
+                <img src={group.img} onClick={()=>{dispatch(setOpenGroupImageTrimming())}} width="170px" height="190px" />
+            :
+            <IconButton onClick={()=>{dispatch(setOpenGroupImageTrimming())}}>
+                <PhotoLibraryIcon /> 画像を選択
+            </IconButton>}
             <GroupImageTrimming/>
             <br/>
             <div>

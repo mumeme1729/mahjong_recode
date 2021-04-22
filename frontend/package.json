@@ -13,6 +13,8 @@
     "@types/react-redux": "^7.1.16",
     "css-loader": "^5.2.1",
     "dotenv-webpack": "^7.0.2",
+    "file-loader": "^6.2.0",
+    "react-svg-loader": "^3.0.3",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.1.0",
     "typescript": "^4.2.4",
@@ -38,6 +40,7 @@
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-share": "^4.4.0",
+    "recharts": "^2.0.9",
     "yup": "^0.32.9"
   }
 }

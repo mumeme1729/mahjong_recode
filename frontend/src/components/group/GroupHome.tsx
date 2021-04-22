@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAsyncCreateRate, fetchAsyncGetGameResults, fetchAsyncGetGroup,fetchAsyncParticipationGroup,selecGroup, selectGameResults, setOpenSettings } from './groupSlice';
 import styles from "./Group.module.css";
 import GameResults from './GameResults';
-import { Button, TextField,} from '@material-ui/core';
+import { Button, makeStyles, TextField,} from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { fetchAsyncGetMyProf, selectLoginUserProfile } from '../auth/authSlice';
 import { 
     FacebookShareButton, 
@@ -136,30 +141,55 @@ const GroupHome:React.FC = () => {
             setPassword("");
         }
     }
-
+    const useStyles = makeStyles({
+        table: {
+            minWidth: 300,
+            maxWidth:700,
+            background:'white',
+        },
+        });
+        const classes = useStyles();
     return (
         <>
             <GroupSettings/>
+            <br/>
+            <Button variant="outlined" color="primary" onClick={()=>history.push(`/home/`)}>ホーム</Button>
             <div className={styles.group_home_container}>
-                
                 <div className={styles.group_home_body_container}>
                     <div className={styles.group_home_body_top}>
-                        <Button onClick={()=>history.push('/home')}>戻る</Button>
-                        
-                        <FacebookShareButton url={`http://localhost:8080/group/${params.id}`}>
-                            <FacebookIcon  round />
-                        </FacebookShareButton>
-                        <TwitterShareButton url={`http://localhost:8080/group/${params.id}`}>
-                            <TwitterIcon  round />
-                        </TwitterShareButton>
-                        <LineShareButton url={`http://localhost:8080/group/${params.id}`}>
-                            <LineIcon/>
-                        </LineShareButton>
-                        
-                        <br/>
-                        <img src={group.img} width="200px" height="220px"/>
-                        {group.title}
-                        {group.text}
+                        <div  className={styles.group_home_body_top_groupinfo}>
+                            <div className={styles.group_home_body_top_groupinfo_container}>
+                                <div>
+                                    <img src={group.img} className={styles.group_img}/>
+                                </div>
+                                <div className={styles.group_home_body_top_groupinfo_title}>
+                                    <div className={styles.group_home_title}>
+                                        <h2 className={styles.group_title_h2}>{group.title}</h2>
+                                        <div className={styles.group_home_title_p}>
+                                        <p>({groupmember.length}人)</p>
+                                        </div>
+                                    </div>
+                                    {group.text}
+                                    <div className={styles.share_btn}>
+                                        <div>
+                                        <FacebookShareButton url={`http://localhost:8080/group/${params.id}` } >
+                                            <FacebookIcon  round size='50px'/>
+                                        </FacebookShareButton>
+                                        </div>
+                                        <div className={styles.share_btn_icon}>
+                                        <TwitterShareButton url={`http://localhost:8080/group/${params.id}`}>
+                                            <TwitterIcon  round size='50px'/>
+                                        </TwitterShareButton>
+                                        </div>
+                                        <div className={styles.share_btn_icon}>
+                                        <LineShareButton url={`http://localhost:8080/group/${params.id}`}>
+                                            <LineIcon size='50px'/>
+                                        </LineShareButton>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <br/>
                     </div>
 
@@ -167,36 +197,45 @@ const GroupHome:React.FC = () => {
                         {istrue?
                         <>
                         <div className={styles.group_home_container_left}>
-                            
                             <div className={styles.group_home_menu}>
-                                <Button onClick={()=>{history.push(`/group/${params.id}/game`)}}>
-                                    対局
-                                </Button>
+                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/game`)}}>
+                                    <h3 className={styles.hgrouphome_menu_btn_h3}>対局 </h3>　
+                                </div>
                                 <br/>
-                                <Button onClick={()=>{history.push(`/group/${params.id}/member`)}}>
-                                    メンバー
-                                </Button>
+                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/member`)}}>
+                                    <h3 className={styles.hgrouphome_menu_btn_h3}>メンバー</h3>
+                                </div>
                                 <br/>
-                                <Button onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
-                                    対局記録
-                                </Button>
+                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
+                                    <h3 className={styles.hgrouphome_menu_btn_h3}>対局記録</h3>
+                                </div>
                                 <br/>
-                                <Button onClick={()=>{dispatch(setOpenSettings())}}>設定</Button>
+                                <div className={styles.grouphome_btn} onClick={()=>{dispatch(setOpenSettings())}}>
+                                    <h3 className={styles.hgrouphome_menu_btn_h3}>　設定　</h3>
+                                </div>
                             </div>
                         </div>
                         <div className={styles.group_home_container_right}>
-                            <div className={styles.group_home_container_right_top}>
-                                レート
-                            </div>
                             <div className={styles.group_home_container_right_bottom}>
                                 <div className={styles.group_home_results}>
-                                    対局記録
-                                    {gameresults.length}
-                                    {gameresults.map((gameresult)=>(
-                                        <div key={gameresult.id}>
-                                            <GameResults {...gameresult}/>
-                                        </div>
-                                    ))}
+                                    <h3>直近の対局記録</h3>
+                                    {/* <TableContainer component={Paper} className={styles.group_home_table_container}> */}
+                                        <Table className={classes.table} size="small" aria-label="a dense table" >
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>1位</TableCell>
+                                                <TableCell>2位</TableCell>
+                                                <TableCell>3位</TableCell>
+                                                <TableCell>4位</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        {gameresults.slice(0,8).map((gameresult)=>(
+                                            <TableBody  key={gameresult.id} className={styles.gameresult_container}>
+                                                <GameResults {...gameresult}/>
+                                            </TableBody>
+                                        ))}
+                                        </Table>
+                                    {/* </TableContainer> */}
                                 </div>
                             </div>
                         </div>

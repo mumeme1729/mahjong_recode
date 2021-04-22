@@ -11,6 +11,7 @@ import Game from './components/group/Game';
 import GroupHome from './components/group/GroupHome';
 import GroupMember from './components/group/GroupMember';
 import MatchRecord from './components/group/MatchRecord';
+import MemberDetail from './components/group/MemberDetail';
 import Header from './components/home/Header';
 import Home from './components/home/Home';
 
@@ -27,6 +28,7 @@ function App(){
                     <Route path="/home" component={Home}/>
                     <Route exact path="/group/:id" component={GroupHome}/>
                     <Route exact path="/group/:id/member" component={GroupMember}/>
+                    <Route exact path="/group/:id/member/:user_id" component={MemberDetail}/>
                     <Route exact path="/group/:id/matchrecord" component={MatchRecord}/>
                     <Route path="/group/:id/game" component={Game}/>
                 </Switch>

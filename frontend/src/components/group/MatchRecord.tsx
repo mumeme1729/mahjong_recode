@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -12,17 +12,16 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles';
-import { RadioButtonChecked } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 
 const MatchRecord:React.FC = () => {
-    const history = useHistory();
     const params = useParams<{ id: string }>();
     const dispatch: AppDispatch = useDispatch();
     const gameresults=useSelector(selectGameResults);
     const [date,setDate]=useState("");
-
+    const history = useHistory();
     useEffect(()=>{
         const fetchLoader = async ()=>{
             if (localStorage.localJWT) {
@@ -81,6 +80,8 @@ const MatchRecord:React.FC = () => {
             <br/>
             <br/>
             <br/>
+            <Button onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
+            <br/>
             <TextField
                 id="date"
                 label="記録検索"
@@ -113,6 +114,7 @@ const MatchRecord:React.FC = () => {
                                 <TableCell>対局数</TableCell>
                                 <TableCell>トップ率</TableCell>
                                 <TableCell>ラス率</TableCell>
+                                <TableCell>連対率</TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -129,6 +131,7 @@ const MatchRecord:React.FC = () => {
                                         <TableCell>{prof.gamecount}</TableCell>
                                         <TableCell>{(((prof.rank1)/prof.gamecount)*100).toFixed(1)}</TableCell>
                                         <TableCell>{(((prof.rank4)/prof.gamecount)*100).toFixed(1)}</TableCell>
+                                        <TableCell>{(((prof.rank1+prof.rank2)/prof.gamecount)*100).toFixed(1)}</TableCell>
                                     </TableRow>
                                 ))}
                                 
@@ -138,11 +141,21 @@ const MatchRecord:React.FC = () => {
                     </TableContainer>
                 </div>
                 <br/>
-                {selectgameresults.map((gameresult)=>(
-                    <div key={gameresult.id}>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} size="small" aria-label="a dense table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>1位</TableCell>
+                            <TableCell>2位</TableCell>
+                            <TableCell>3位</TableCell>
+                            <TableCell>4位</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {gameresults.map((gameresult)=>(
                         <GameResults {...gameresult}/>
-                    </div>
-                ))}
+                    ))}
+                    </Table>
+                </TableContainer>
             </div>
         </div>
     )

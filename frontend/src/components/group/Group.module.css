@@ -1,41 +1,100 @@
-.group_home_container{
-    background-color: blueviolet;
+/* グループホーム */
+.group_home_container{ 
+    height: 100%;
+    width:100%
+}
+.group_img{
+    width:200px; 
+    height:220px;
 }
 .group_home_body{
     display: flex;
-    background-color: cornflowerblue;
+    
+}
+.group_home_body_top{
+    margin-left: 10px;
+}
+.group_home_body_top_groupinfo_container{
+    display: flex;
+    margin-top: 5px;
+}
+.group_home_title{
+    display: flex;
+}
+.group_home_title_p{
+    margin-top: 11px;
+}
+.group_home_body_top_groupinfo_title{
+    margin-left: 15px;
+}
+.share_btn{
+    margin-top: 40px;
+    display: flex;
+}
+.share_btn_icon{
+    margin-left: 6px;
 }
 .group_home_container_left{
-    background-color: yellow;
-    width: 50%;
+    width: 30%;
+}
+.grouphome_btn{
+    border-bottom:solid 2px rgba(0,0,0,0.5);
+    width: 130px;
+    margin-top: 7px;
+    text-align: center;
+}
+.grouphome_btn:hover{
+    opacity: 0.7;
 }
 .group_home_menu{
-    background-color: white;
+    margin-left: 70px;
+    width: 250px;
+}
+.hgrouphome_menu_btn_h3{
+    margin-bottom: -1px;
 }
 .group_home_container_right{
-    width: 50%;
-    background-color: chartreuse;
+    width: 70%;
+}
+.results_table_p{
+    display:inline
 }
 .group_home_results{
-    background-color: crimson;
-    height: 500px;
+    margin-top: -15px;
+    height: 350px;
+    margin-left: 5px;
 }
 /* ゲーム結果 */
 .gameresult_container{
     display: flex;
-    background-color: cyan;
 }
 .gameresult_body{
     margin-left: 20px;
 }
 /* 対局 */
+
+.game_main_container{
+    width: 800px;
+    text-align: center;
+    margin-left: 20%;
+}
+.page_title_select_member{
+    text-align: left;
+}
+.game_container{
+    display: flex;
+    width: 800px;
+    flex-wrap: wrap;
+}
 .gameresult_container:hover{
    opacity: 0.7;
 }
 .game_body{
-    
     margin-top: 5px;
     width: 100px;
+}
+.game_avater{
+    margin-left:10px;
 }
 .game_user_btn:hover{
     opacity: 0.7;
@@ -43,4 +102,89 @@
 .game_selected_profile{
     opacity: 0.5;
     background-color: grey;
+}
+/* 個人成績 */
+.radar_chart{
+    display: none;
+}
+/* メンバー詳細 */
+.memberdetail_container_top{
+    display: flex;
+}
+.memberdetail_prof{
+    width: 200px;
+    text-align: center;
+    margin-top: 80px;
+}
+.memberdetail_prof_avatar{
+    margin-left: 65px;
+}
+.memberdetail_chart{
+
+}
+@media screen and (max-width: 800px) {
+    .group_home_body_top{
+        margin-left: 10px;
+    }
+    .group_home_body{
+        display:flex;
+        flex-flow: column;
+    }
+    .group_home_container_left{
+        margin-left: -6px;
+        width: 100%;
+    }
+    .grouphome_btn{
+        border-bottom:solid 2px rgba(0,0,0,0.5);
+        width: 100px;
+        text-align: center;
+        margin-left: 10px;
+    }
+    .group_home_menu{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-left: 0px;
+    }
+    .group_home_container_right{
+        margin-top: 28px;
+        width: 100%;
+    }
+    .results_table_p{
+        display: block;
+    }
+    /* 対局開始 */
+    .game_main_container{
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+    }
+    .game_container{
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    /* メンバー詳細 */
+    .memberdetail_container_top{
+        display: flex;
+        flex-flow: column;
+    }
+    .memberdetail_prof{
+        width: 200px;
+        margin-top: 5px;
+        margin-left: -60px;
+    }
+}
+@media screen and (max-width: 500px) {
+    .group_img{
+        width: 150px;
+        height: 170px;
+        margin-top: 25px;
+    }
+    .group_title_h2{
+        font-size: 18px;
+    }
+    .group_home_body_top_groupinfo_title{
+        margin-top: 13px;
+    }
 }

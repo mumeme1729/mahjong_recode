@@ -30,16 +30,17 @@ const Home:React.FC = () => {
     },[]);
 
     return (
-        <div className={styles.home_container}>
-
+        <div>
             <Search/>
-            {belongtogroup.length!==0 && belongtogroup[0].id!==0?
-            <div className={styles.home_grouplist_container}>
-                {belongtogroup.map((group)=>(
-                    <BelongToGroupList key={group.id} {...group}/>
-                ))}
+            <div className={styles.home_container}>
+                {belongtogroup.length!==0 && belongtogroup[0].id!==0?
+                <div className={styles.home_grouplist_container}>
+                    {belongtogroup.map((group)=>(
+                        <BelongToGroupList key={group.id} {...group}/>
+                    ))}
+                </div>
+                :<>参加しているグループはありません</>}
             </div>
-            :<>参加しているグループはありません</>}
         </div>
     )
 }
