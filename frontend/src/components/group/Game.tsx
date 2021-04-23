@@ -32,13 +32,14 @@ const Game:React.FC = () => {
     const group=useSelector(selecGroup);
     const groupmember=group.profile;
     const [openModal,setOpenModal]=useState(false);
-    const [uma,setUma]=useState(10);
     const [score1,setScore1]=useState<{id:number,score:number}>({id:0,score:0});
     const [score2,setScore2]=useState<{id:number,score:number}>({id:0,score:0});
     const [score3,setScore3]=useState<{id:number,score:number}>({id:0,score:0});
     const [score4,setScore4]=useState<{id:number,score:number}>({id:0,score:0});
     const [startLoad,setStartLoad]=useState(false);
     const [memts,setMemts]=useState<number[]>([]);
+    const [uma, setUma] = useState('5-10');
+    
     let ratelist:{
         rate_id: number;
         group_id: number;
@@ -92,10 +93,23 @@ const Game:React.FC = () => {
                 cscore=Math.ceil(cscore);
                 culcscore=cscore-30;
             }
-            if(i===1){culcscore=culcscore+20+uma;}
-            if(i===2){culcscore=culcscore+(uma/2);}
-            if(i===3){culcscore=culcscore-(uma/2);}
-            if(i===4){culcscore=culcscore-uma};
+            // ウマの計算
+            if(uma==="5-10"){
+                if(i===1){culcscore=culcscore+20+10;}
+                if(i===2){culcscore=culcscore+5;}
+                if(i===3){culcscore=culcscore-5;}
+                if(i===4){culcscore=culcscore-10};
+            }else if(uma==="10-20"){
+                if(i===1){culcscore=culcscore+20+20;}
+                if(i===2){culcscore=culcscore+10;}
+                if(i===3){culcscore=culcscore-10;}
+                if(i===4){culcscore=culcscore-20};
+            }else if(uma==="10-30"){
+                if(i===1){culcscore=culcscore+20+30;}
+                if(i===2){culcscore=culcscore+10;}
+                if(i===3){culcscore=culcscore-10;}
+                if(i===4){culcscore=culcscore-30};
+            }
 
             let r:{id:number,score:number,rank:number}={id:rank.id,score:culcscore,rank:i}
             console.log(culcscore);
@@ -176,42 +190,47 @@ const Game:React.FC = () => {
                 </div>
                 <div className={styles.game_container}>        
                     {groupmember.map((member)=>(
-                        <div key={member.id} >
-                            <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
-                                <div className={styles.game_body}>
-                                    {!memts.includes(member.userProfile)
-                                    ?
-                                        <div>
-                                            <div className={styles.game_avater}>
-                                                {member.img!==""?
-                                                <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
-                                                :null}
-                                            </div>
+                        <>
+                        {member.is_active &&
+                            <div key={member.id} >
+                                <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
+                                    <div className={styles.game_body}>
+                                        {!memts.includes(member.userProfile)
+                                        ?
                                             <div>
-                                                {member.nickName}
-                                                <br/>
-                                                {member.rate}
+                                                <div className={styles.game_avater}>
+                                                    {member.img!==""?
+                                                    <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                    :null}
+                                                </div>
+                                                <div>
+                                                    {member.nickName}
+                                                    <br/>
+                                                    {member.rate}
+                                                </div>
                                             </div>
-                                        </div>
-                                    :
-                                        <div className={styles.game_selected_profile}>
-                                            <div className={styles.game_avater}>
-                                                {member.img!==""?
-                                                <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
-                                                :null}
+                                        :
+                                            <div className={styles.game_selected_profile}>
+                                                <div className={styles.game_avater}>
+                                                    {member.img!==""?
+                                                    <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                    :null}
+                                                </div>
+                                                <div>
+                                                    {member.nickName}
+                                                    <br/>
+                                                    {member.rate}
+                                                </div>
                                             </div>
-                                            <div>
-                                                {member.nickName}
-                                                <br/>
-                                                {member.rate}
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </Button>
-                        </div>
+                                        }
+                                    </div>
+                                </Button>
+                            </div>
+                        }
+                        </>
                     ))}
                 </div>
+                
                 <Button
                     disabled={memts.length!==4}
                     variant="contained"
@@ -281,7 +300,35 @@ const Game:React.FC = () => {
                 }
                 <div>
                     <p>合計:{score1.score+score2.score+score3.score+score4.score}</p>
-                    <br/>
+                    <div className={styles.match_radio_box_container}>
+                        <label>
+                            <input
+                            type="radio"
+                            value="5-10"
+                            onChange={(e)=>{setUma(e.target.value)}}
+                            checked={uma === '5-10'}
+                            />
+                            5-10
+                        </label>
+                        <label>
+                            <input
+                            type="radio"
+                            value="10-20"
+                            onChange={(e)=>{setUma(e.target.value)}}
+                            checked={uma === '10-20'}
+                            />
+                            10-20
+                        </label>
+                        <label>
+                            <input
+                            type="radio"
+                            value="10-30"
+                            onChange={(e)=>{setUma(e.target.value)}}
+                            checked={uma === '10-30'}
+                            />
+                            10-30
+                        </label>
+                    </div>
                     <Button
                         disabled={score1.score+score2.score+score3.score+score4.score!==100000}
                         variant="contained"

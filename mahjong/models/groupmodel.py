@@ -41,7 +41,7 @@ class Rate(models.Model):
     group_id=models.ForeignKey(Group,related_name='group_rate_id',on_delete=models.CASCADE)
     user_id=models.ForeignKey(settings.AUTH_USER_MODEL,related_name='game_rate_user',null=True,on_delete=models.SET_NULL)
     rate=models.IntegerField(default=1500)
-
+    is_active=models.BooleanField(default=True)
     class Meta:
         unique_together=('group_id','user_id')
 

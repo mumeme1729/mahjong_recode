@@ -39,7 +39,7 @@ class RateSerializer(serializers.ModelSerializer):
     rate_id = serializers.SerializerMethodField()
     class Meta:
         model=Rate
-        fields=('rate_id','group_id','user_id','rate')
+        fields=('rate_id','group_id','user_id','rate','is_active')
     def get_rate_id(self, obj):
         return obj.id
 

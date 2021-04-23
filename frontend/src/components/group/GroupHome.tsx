@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { PROPS_BELONG_TO_GROUP } from '../types'
 import { AppDispatch } from "../../app/store";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAsyncCreateRate, fetchAsyncGetGameResults, fetchAsyncGetGroup,fetchAsyncParticipationGroup,selecGroup, selectGameResults, setOpenSettings } from './groupSlice';
+import { fetchAsyncCreateRate, fetchAsyncGetGameResults, fetchAsyncGetGroup,fetchAsyncParticipationGroup,fetchAsyncRateIsActive,selecGroup, selectGameResults, setOpenSettings } from './groupSlice';
 import styles from "./Group.module.css";
 import GameResults from './GameResults';
 import { Button, makeStyles, TextField,} from '@material-ui/core';
@@ -68,6 +68,7 @@ const GroupHome:React.FC = () => {
                         group_id: number;
                         user_id: number;
                         rate: number;
+                        is_active:boolean;
                     }[]=results.payload.profile
                     const profileresults=await dispatch(fetchAsyncGetMyProf());
                     if(fetchAsyncGetMyProf.fulfilled.match(profileresults)){
@@ -80,7 +81,7 @@ const GroupHome:React.FC = () => {
                             img: string;
                         }=profileresults.payload;
                         const isParti=member.map((m)=>{
-                            return m.userProfile===profile.userProfile
+                            return (m.userProfile===profile.userProfile && m.is_active)
                         })
                         setIsTrue(isParti.includes(true))
                     }
@@ -91,25 +92,48 @@ const GroupHome:React.FC = () => {
         fetchLoader();
     },[]);
 
-    
+    //グループから抜ける
+    const leaveGroup=async()=>{
+        let rate_id:number=0;
+            console.log(groupmember)
+            groupmember.forEach((gm)=>{
+                if(gm.userProfile===loginuserprofile.userProfile){
+                    rate_id=gm.rate_id
+                }
+            })
+        const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:false}
+        const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
+        if(fetchAsyncRateIsActive.fulfilled.match(results)){
+            history.push('/home');
+        }
+    }
     //グループに参加
     const participationGroup=async()=>{
         if(group.password==="" || group.password===null){
             let member:number[]=[]
-            console.log(groupmember)
+            let flag=true;
+            let rate_id=0;
             groupmember.forEach((gm)=>{
                 member.push(gm.user_id);
+                if((!gm.is_active) && (gm.userProfile===loginuserprofile.userProfile)){
+                    flag=false;
+                    rate_id=gm.rate_id;
+                }
             })
-            console.log("参加")
-            console.log(member)
-            member.push(loginuserprofile.userProfile);
-            console.log(loginuserprofile.userProfile);
-            console.log(member)
-            const pkt={id:group.id,userGroup:member}
-            const results=await dispatch(fetchAsyncParticipationGroup(pkt));
-            if(fetchAsyncParticipationGroup.fulfilled.match(results)){
-                const rate_pkt={group_id:group.id,user_id:loginuserprofile.userProfile}
-                await dispatch(fetchAsyncCreateRate(rate_pkt));
+            if(flag){
+                member.push(loginuserprofile.userProfile);
+                console.log(loginuserprofile.userProfile);
+                console.log(member)
+                const pkt={id:group.id,userGroup:member}
+                const results=await dispatch(fetchAsyncParticipationGroup(pkt));
+                if(fetchAsyncParticipationGroup.fulfilled.match(results)){
+                    const rate_pkt={group_id:group.id,user_id:loginuserprofile.userProfile,is_active:true}
+                    await dispatch(fetchAsyncCreateRate(rate_pkt));
+                }
+            }else{
+                const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:true}
+                const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
+                console.log(results);
             }
             setIsTrue(true);
             
@@ -121,15 +145,27 @@ const GroupHome:React.FC = () => {
     const participationGroupWithPassword=async()=>{
         if (password===group.password){
             let member:number[]=[]
+            let flag=true;
+            let rate_id=0;
             groupmember.forEach((gm)=>{
                 member.push(gm.userProfile);
+                if((!gm.is_active)&& (gm.userProfile===loginuserprofile.userProfile)){
+                    flag=false;
+                    rate_id=gm.rate_id;
+                }
             })
-            member.push(loginuserprofile.userProfile);
-            const pkt={id:group.id,userGroup:member}
-            const results=await dispatch(fetchAsyncParticipationGroup(pkt));
-            if(fetchAsyncParticipationGroup.fulfilled.match(results)){
-                const rate_pkt={group_id:group.id,user_id:loginuserprofile.userProfile}
-                await dispatch(fetchAsyncCreateRate(rate_pkt));
+            if(flag){
+                member.push(loginuserprofile.userProfile);
+                const pkt={id:group.id,userGroup:member}
+                const results=await dispatch(fetchAsyncParticipationGroup(pkt));
+                if(fetchAsyncParticipationGroup.fulfilled.match(results)){
+                    const rate_pkt={group_id:group.id,user_id:loginuserprofile.userProfile,is_active:true}
+                    await dispatch(fetchAsyncCreateRate(rate_pkt));
+                }
+            }else{
+                const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:true}
+                const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
+                console.log(results);
             }
             setIsTrue(true);
             setNotMatchPass(false);
@@ -166,7 +202,7 @@ const GroupHome:React.FC = () => {
                                     <div className={styles.group_home_title}>
                                         <h2 className={styles.group_title_h2}>{group.title}</h2>
                                         <div className={styles.group_home_title_p}>
-                                        <p>({groupmember.length}人)</p>
+                                        <p>({groupmember.filter((g)=>{return g.is_active}).length})</p>
                                         </div>
                                     </div>
                                     {group.text}
@@ -213,6 +249,14 @@ const GroupHome:React.FC = () => {
                                 <div className={styles.grouphome_btn} onClick={()=>{dispatch(setOpenSettings())}}>
                                     <h3 className={styles.hgrouphome_menu_btn_h3}>　設定　</h3>
                                 </div>
+                                {/* <Button
+                                    // disabled={password!==group.password}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={()=>{leaveGroup()}}
+                                >
+                                    グループから抜ける
+                                </Button> */}
                             </div>
                         </div>
                         <div className={styles.group_home_container_right}>
@@ -223,16 +267,20 @@ const GroupHome:React.FC = () => {
                                         <Table className={classes.table} size="small" aria-label="a dense table" >
                                         <TableHead>
                                             <TableRow>
+                                                <TableCell>日付</TableCell>
                                                 <TableCell>1位</TableCell>
                                                 <TableCell>2位</TableCell>
                                                 <TableCell>3位</TableCell>
                                                 <TableCell>4位</TableCell>
                                             </TableRow>
                                         </TableHead>
-                                        {gameresults.slice(0,8).map((gameresult)=>(
-                                            <TableBody  key={gameresult.id} className={styles.gameresult_container}>
-                                                <GameResults {...gameresult}/>
-                                            </TableBody>
+                                        {gameresults.slice(0,7).map((gameresult)=>(
+                                          <TableBody  key={gameresult.id} className={styles.gameresult_container}>
+                                          <TableRow className={styles.gameresult_container}>
+                                             <TableCell  >{gameresult.created_at.slice(0,10)}</TableCell> 
+                                             <GameResults {...gameresult}/>
+                                          </TableRow>
+                                          </TableBody>
                                         ))}
                                         </Table>
                                     {/* </TableContainer> */}

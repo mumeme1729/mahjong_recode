@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN,PROPS_CREATE_GAME,PROPS_CREATE_GAME_RESLTS,PROPS_CREATE_GROUP, PROPS_CREATE_RATE, PROPS_PARTICIPATION, PROPS_RATE, PROPS_UPDATE_GROUP, PROPS_UPDATE_GROUP_IMAGE} from '../types'
+import {PROPS_AUTHEN,PROPS_CREATE_GAME,PROPS_CREATE_GAME_RESLTS,PROPS_CREATE_GROUP, PROPS_CREATE_RATE, PROPS_PARTICIPATION, PROPS_RATE, PROPS_RATE_IS_ACTIVE, PROPS_UPDATE_GROUP, PROPS_UPDATE_GROUP_IMAGE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -20,8 +20,7 @@ export const fetchAsyncParticipationGroup=createAsyncThunk(
       },
     }).catch(error => {
       console.log(error.response)
-    });
-    
+    }); 
   });
 //レート作成
 export const fetchAsyncCreateRate = createAsyncThunk(
@@ -143,9 +142,24 @@ export const fetchAsyncCreateGameResults=createAsyncThunk(
 );
 //レート更新
 export const fetchAsyncPutRate=createAsyncThunk(
-  "rate/put",
+  "rate/patch",
   async(rate_info:PROPS_RATE)=>{
-    const res = await axios.put(`${apiUrl}mahjong/rate/${rate_info.rate_id}/`, rate_info, {
+    const res = await axios.patch(`${apiUrl}mahjong/rate/${rate_info.rate_id}/`, rate_info, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
+      },
+    }).catch(error => {
+      console.log(error.response)
+    });
+    //return res.data;
+  }
+);
+//グループからユーザーを脱退
+export const fetchAsyncRateIsActive=createAsyncThunk(
+  "rateisactive/patch",
+  async(rate_info:PROPS_RATE_IS_ACTIVE)=>{
+    const res = await axios.patch(`${apiUrl}mahjong/rate/${rate_info.rate_id}/`, rate_info, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${localStorage.localJWT}`,
@@ -195,7 +209,8 @@ export const groupSlice=createSlice({
                     rate_id:0,
                     group_id:0,
                     user_id: 0,
-                    rate: 1500
+                    rate: 1500,
+                    is_active:false,
                 }
             ],
         },

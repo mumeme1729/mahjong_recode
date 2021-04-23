@@ -30,6 +30,7 @@ export interface PROPS_PARTICIPATION{
 export interface PROPS_CREATE_RATE{
     group_id:number;
     user_id:number;
+    is_active:boolean;
 }
 export interface PROPS_BELONG_TO_GROUP{
     id: number;
@@ -42,6 +43,7 @@ export interface PROPS_BELONG_TO_GROUP{
         userProfile: number;
         created_on: string;
         img: string;
+        is_active:boolean;
     }[]        
 }
 
@@ -113,6 +115,12 @@ export interface PROPS_RATE{
     group_id:number;
     user_id:number;
     rate:number;
+}
+export interface PROPS_RATE_IS_ACTIVE{
+    rate_id:number;
+    group_id:string;
+    user_id:number;
+    is_active:boolean;
 }
 export interface PROPS_CREATE_GAME_RESLTS{
     game_id:number;

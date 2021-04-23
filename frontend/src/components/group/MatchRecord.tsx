@@ -13,7 +13,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-
+import styles from "./Group.module.css";
 
 
 const MatchRecord:React.FC = () => {
@@ -72,15 +72,18 @@ const MatchRecord:React.FC = () => {
         minWidth: 700,
         maxWidth:1200,
     },
+    table2:{
+        minWidth: 300,
+        maxWidth:700,
+        background:'white',
+    }
     });
     console.log(profile)
     const classes = useStyles();
     return (
         <div>
             <br/>
-            <br/>
-            <br/>
-            <Button onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
+            <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
             <br/>
             <TextField
                 id="date"
@@ -141,10 +144,10 @@ const MatchRecord:React.FC = () => {
                     </TableContainer>
                 </div>
                 <br/>
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} size="small" aria-label="a dense table">
+                <Table className={classes.table2} size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
+                            <TableCell>日付</TableCell>
                             <TableCell>1位</TableCell>
                             <TableCell>2位</TableCell>
                             <TableCell>3位</TableCell>
@@ -152,10 +155,14 @@ const MatchRecord:React.FC = () => {
                         </TableRow>
                     </TableHead>
                     {gameresults.map((gameresult)=>(
-                        <GameResults {...gameresult}/>
+                     <TableBody  key={gameresult.id} className={styles.gameresult_container}>
+                         <TableRow className={styles.gameresult_container}>
+                            <TableCell  >{gameresult.created_at.slice(0,10)}</TableCell> 
+                            <GameResults {...gameresult}/>
+                         </TableRow>
+                     </TableBody>
                     ))}
-                    </Table>
-                </TableContainer>
+                </Table>
             </div>
         </div>
     )

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch } from '../../app/store'
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import styles from "../home/Home.module.css";
-import { fetchAsyncUpdateProfImage, selectLoginUserProfile } from '../auth/authSlice';
 import { fetchAsyncUpdateGroupImage, resetOpenGroupImageTrimming, selecGroup, selectOpenGroupImageTrimming } from './groupSlice';
 
 const modalStyle={

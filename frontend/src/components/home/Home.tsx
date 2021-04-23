@@ -26,7 +26,7 @@ const Home:React.FC = () => {
                 }
               }
             };
-            fetchLoader();
+        fetchLoader();
     },[]);
 
     return (
@@ -36,7 +36,14 @@ const Home:React.FC = () => {
                 {belongtogroup.length!==0 && belongtogroup[0].id!==0?
                 <div className={styles.home_grouplist_container}>
                     {belongtogroup.map((group)=>(
-                        <BelongToGroupList key={group.id} {...group}/>
+                        <>
+                        {group.profile.map((prof)=>(
+                            <>
+                            {prof.is_active &&prof.userProfile===loginUserProfile.userProfile && <BelongToGroupList key={group.id} {...group}/>}
+                            </>
+                        ))}
+                         {/* <BelongToGroupList key={group.id} {...group}/> */}
+                        </>
                     ))}
                 </div>
                 :<>参加しているグループはありません</>}

@@ -9,6 +9,7 @@ import { AppDispatch } from '../../app/store';
 import { fetchAsyncCreateGroup } from './homeSlice';
 import { selectLoginUserProfile } from '../auth/authSlice';
 import { fetchAsyncCreateRate, fetchAsyncParticipationGroup } from '../group/groupSlice';
+import { useHistory } from 'react-router-dom';
 
 const modalStyle={
     overlay: {
@@ -35,7 +36,7 @@ const Search:React.FC = () => {
     const [password,setPassword]=useState("")
     const [image, setImage] = useState<File | null>(null);
     const loginuserprofile=useSelector(selectLoginUserProfile);
-    
+    const history = useHistory();
     let url="";
     const handlerEditPicture = () => {
         const fileInput = document.getElementById("imageInput");
@@ -46,8 +47,9 @@ const Search:React.FC = () => {
         console.log("サーチ")
         e.preventDefault();
         const packet = { title: groupName,text:text,password:password,img: image,};
-        console.log(packet)
+        //console.log(packet)
         const results=await dispatch(fetchAsyncCreateGroup(packet));
+        console.log(fetchAsyncCreateGroup.fulfilled.match(results))
         const group_id=results.payload.id;
         console.log(group_id)
         if(fetchAsyncCreateGroup.fulfilled.match(results)){
@@ -59,8 +61,11 @@ const Search:React.FC = () => {
             console.log(fetchAsyncParticipationGroup.fulfilled.match(results))
             if(fetchAsyncParticipationGroup.fulfilled.match(results)){
                 console.log("rate")
-                const rate_pkt={group_id:group_id,user_id:loginuserprofile.userProfile}
-                await dispatch(fetchAsyncCreateRate(rate_pkt));
+                const rate_pkt={group_id:group_id,user_id:loginuserprofile.userProfile,is_active:true}
+                const rate_results=await dispatch(fetchAsyncCreateRate(rate_pkt));
+                if(fetchAsyncCreateRate.fulfilled.match(rate_results)){
+                    history.push(`/group/${group_id}`)
+                }
             }   
         }
         setGroupName("");

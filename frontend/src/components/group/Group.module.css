@@ -71,6 +71,7 @@
 .gameresult_body{
     margin-left: 20px;
 }
+
 /* 対局 */
 
 .game_main_container{
@@ -119,8 +120,28 @@
 .memberdetail_prof_avatar{
     margin-left: 65px;
 }
-.memberdetail_chart{
-
+/* 設定モーダル */
+.leavegroup{
+    font-size: 8px;
+    margin-left: 170px;
+    margin-top: 30px;
+}
+.leavegroup:hover{
+    background-color: tomato;
+    opacity: 0.8;
+}
+.leavegroup_p_c{
+    font-size: 5px;
+}
+.leavegroup_container{
+    display: flex;
+    margin-top: 20px;
+}
+.leavegroup_body{
+    margin-left: 40px;
+}
+.groupsetting_modal_img:hover{
+    opacity: 0.7;
 }
 @media screen and (max-width: 800px) {
     .group_home_body_top{

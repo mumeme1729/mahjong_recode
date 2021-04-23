@@ -72,11 +72,11 @@ const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
     
     return (
         <>
-            <TableRow className={styles.gameresult_container}>
+            {/* <TableRow className={styles.gameresult_container}> */}
                 {results.map((result=>(
                     <TableCell component="th" scope="row" key={result.id}  ><p className={styles.results_table_p}>{result.score}</p> <p className={styles.results_table_p}>{result.profile.nickName}</p></TableCell> 
                 )))}
-            </TableRow>
+            {/* </TableRow> */}
         </>
     )
 }

@@ -31,6 +31,7 @@ export const fetchAsyncCreateGroup = createAsyncThunk(
           Authorization: `JWT ${localStorage.localJWT}`,
         },
       })
+      console.log(res.data)
       return res.data;
     });
 
@@ -54,6 +55,7 @@ export const homeSlice=createSlice({
                     userProfile: 0,
                     created_on: "",
                     img: "",
+                    is_active:true,                    
                 }
             ],
         }],
@@ -82,12 +84,12 @@ export const homeSlice=createSlice({
         builder.addCase(fetchAsyncGetBelongToGroup.fulfilled, (state, action) => {
             state.belongToGroup = action.payload;
         });
-        builder.addCase(fetchAsyncCreateGroup.fulfilled, (state, action) => {
-          return {
-            ...state,
-            belongToGroup: [ action.payload,...state.belongToGroup],
-        };
-      });
+      //   // builder.addCase(fetchAsyncCreateGroup.fulfilled, (state, action) => {
+      //   //   return {
+      //   //     ...state,
+      //   //     belongToGroup: [ action.payload,...state.belongToGroup],
+      //   // };
+      // });
     },
 });
 

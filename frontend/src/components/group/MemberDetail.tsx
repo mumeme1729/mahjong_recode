@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppDispatch } from '../../app/store';
-import { fetchAsyncGetGameResults, fetchAsyncGetSelectProfile, selectGameResults, selectSelectProfile } from './groupSlice';
+import { fetchAsyncGetGameResults, fetchAsyncGetSelectProfile, fetchAsyncRateIsActive, selectGameResults, selectSelectProfile } from './groupSlice';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -21,6 +21,7 @@ const MemberDetail:React.FC = () => {
     const gameresults=useSelector(selectGameResults);
     const history = useHistory();
     const prof=useSelector(selectSelectProfile);
+
     useEffect(()=>{
         const fetchLoader = async ()=>{
             if (localStorage.localJWT) {
@@ -212,7 +213,7 @@ const MemberDetail:React.FC = () => {
                                 <TableCell align="center">{rank4}</TableCell>
                                 <TableCell align="center">{gamecount}</TableCell>
                                 <TableCell align="center">{(((rank1)/gamecount)*100).toFixed(1)}</TableCell>
-                                <TableCell align="center">{(((rank4)/gamecount)*100).toFixed(1)}</TableCell>
+                                <TableCell align="center">{100-Number((((rank4)/gamecount)*100).toFixed(1))}</TableCell>
                                 <TableCell align="center">{(((rank1+rank2)/gamecount)*100).toFixed(1)}</TableCell>
                             </TableRow>   
                         </TableBody>
