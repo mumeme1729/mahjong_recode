@@ -5,11 +5,28 @@ import { Formik } from "formik";
 import {Button,TextField} from "@material-ui/core";
 import {Link,useHistory} from 'react-router-dom';
 import * as Yup from "yup";
+import Modal from "react-modal";
+import styles from './Auth.module.css';
 import {
     resetOpenSignIn,
     selectOpenSignIn,
     fetchAsyncRegister,
+    setOpenSignIn,
 } from './authSlice';
+const modalStyle={
+    overlay: {
+        background: 'rgba(0, 0, 0, 0.2)',
+        zIndex:4,
+      },
+    content: {  
+      top: "50%",
+      left: "50%",
+      backgroundColor: 'white',
+      width: 260,
+      height: 180,
+      transform: "translate(-50%, -50%)",
+      },
+};
 const SignUp:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const [sendEmail,setSendEmail]=useState(false);
@@ -17,21 +34,27 @@ const SignUp:React.FC = () => {
     const history = useHistory();
     const handleLink = (path: string) => history.push(path);
     return (
+        <>
         <div　className="auth_container">
             <Formik
                 initialErrors={{ email: "required" }}
                 initialValues={{ email: "", password: "",password2:"" }}
                 
                 onSubmit={async (values) => {
-                    setSendEmail(true)
                     const auth_packet={email: values.email,password: values.password}
-                    console.log(values.email)
                     const resultRegister = await dispatch(fetchAsyncRegister(auth_packet));
-                    console.log(resultRegister)
                     //新規作成に成功したらログイン
                     if (fetchAsyncRegister.fulfilled.match(resultRegister)) {
-                        setSuccessCreateAccount(false);
-                        setSendEmail(true);
+                        if (resultRegister.payload.email===values.email){
+                            setSuccessCreateAccount(false);
+                            setSendEmail(true);
+                        }else{
+                            values.email="";
+                            values.password="";
+                            values.password2="";
+                            setSendEmail(false);
+                            setSuccessCreateAccount(true);
+                        }
                     }else{
                         values.email="";
                         values.password="";
@@ -45,8 +68,8 @@ const SignUp:React.FC = () => {
                     email: Yup.string()
                             .email("メールアドレスのフォーマットが不正です。")
                             .required("メールアドレスは必須です。"),
-                    password: Yup.string().required("パスワードは必須です。").min(4),
-                    password2:Yup.string().required("パスワードは必須です。").oneOf([Yup.ref("password"), null], "Passwords must match")
+                    password: Yup.string().required("パスワードは必須です。").min(8),
+                    password2:Yup.string().required("確認パスワードは必須です。").oneOf([Yup.ref("password"), null], "Passwords must match")
                 })}
             >
             {({
@@ -62,19 +85,13 @@ const SignUp:React.FC = () => {
                         {/* <div className="css_styles.auth_progress">
                             {isLoadingAuth && <CircularProgress />}
                         </div> */}
-                        {sendEmail
-                        ?
-                            <div>
-                                ご登録いただいたメールアドレスにメールを送信しました。
-                                メールより本登録をお願いします。
-                            </div>:null}
                         {successCreateAccount
                         ?
                             <div>
-                                このメールアドレスは既に登録されています
+                                <p className={styles.login_failure_p}>このメールアドレスは既に登録されています</p>
                             </div>:null}
                         <div className="">
-                            <h2>アカウント作成</h2>
+                            <h2 className={styles.login_signup_h2}>アカウント作成</h2>
                         </div>
                         
                         <form onSubmit={handleSubmit}>
@@ -117,12 +134,14 @@ const SignUp:React.FC = () => {
                                     <div >{errors.password2}</div>
                                     ) : null}
                                 <div className="">
+                                    <br/>
                                     <Button variant="contained" color="primary" disabled={!isValid} type="submit">
                                         アカウント作成
                                     </Button>
-                                    <div className="">
-                                        <span onClick={async () => {
-                                            dispatch(resetOpenSignIn());              
+                                    <br/>
+                                    <div className={styles.switch_login_signup_btn_container}>
+                                        <span className={styles.switch_login_signup_btn} onClick={async () => {
+                                            dispatch(setOpenSignIn());              
                                         }}>
                                             アカウントをお持ちの方はこちら
                                         </span>
@@ -134,6 +153,30 @@ const SignUp:React.FC = () => {
                 )}
             </Formik>
         </div>
+        <Modal
+                isOpen={sendEmail}
+                onRequestClose={()=>{
+                    setSendEmail(false);
+                }}
+                style={modalStyle}
+                ariaHideApp={false}
+            >
+                <div className={styles.send_mail_container}>
+                <div>
+                    <p className={styles.send_mail_p}>ご登録いただいたメールアドレスに確認メールを送信しました。</p>
+                    <p className={styles.send_mail_p}>メールより本登録をお願いします。</p>
+                </div>
+                <div>
+                    <Button
+                        variant="contained" color="primary"
+                        onClick={()=>{setSendEmail(false)}}
+                    >
+                        OK
+                    </Button>
+                </div>
+                </div>
+        </Modal>
+        </>
     )
 }
 

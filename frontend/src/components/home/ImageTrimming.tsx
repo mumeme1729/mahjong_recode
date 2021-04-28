@@ -20,7 +20,7 @@ const modalStyle={
       left: "50%",
       backgroundColor: 'white',
       width: 260,
-      height: 450,
+      height: 480,
       transform: "translate(-50%, -50%)",
       },
 };
@@ -140,17 +140,6 @@ const handlerEditPicture = () => {
                     onCropComplete={onCropComplete}
                     onZoomChange={setZoom}
                     />
-                    <div>
-                        {/* <Slider
-                        value={zoom}
-                        min={1}
-                        max={3}
-                        step={0.1}
-                        aria-labelledby="Zoom"
-                        //onChange={(e,zoom) => setZoom(zoom)}
-                        classes={{ root: 'slider' }}
-                        /> */}
-                    </div>
                     <div className={styles.image_tring_select}>
                         <input type="file" id="editInputImage" className={styles.profile_image_icon_input}
                             accept=".jpg,.gif,.png,image/gif,image/jpeg,image/png"
@@ -168,6 +157,19 @@ const handlerEditPicture = () => {
                         >
                         適応
                         </Button>
+                    </div>
+                    <div className={styles.image_slider}>
+                        <Slider
+                            value={zoom}
+                            min={1}
+                            max={4}
+                            step={0.1}
+                            aria-labelledby="Zoom"
+                            onChange={(e,zoom) => {
+                                let z=Number(zoom)
+                                setZoom(z)
+                            }}
+                        />
                     </div>
                 </div>
             </div>

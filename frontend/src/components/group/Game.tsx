@@ -50,7 +50,6 @@ const Game:React.FC = () => {
         const fetchLoader = async ()=>{
             if (localStorage.localJWT) {
                 const fetchresults=await dispatch(fetchAsyncGetGroup(params.id));
-                console.log(fetchresults.payload)
             }
         };
         fetchLoader();
@@ -112,7 +111,6 @@ const Game:React.FC = () => {
             }
 
             let r:{id:number,score:number,rank:number}={id:rank.id,score:culcscore,rank:i}
-            console.log(culcscore);
             i=i+1;
             score.push(r);
             //レート計算
@@ -190,8 +188,7 @@ const Game:React.FC = () => {
                 </div>
                 <div className={styles.game_container}>        
                     {groupmember.map((member)=>(
-                        <>
-                        {member.is_active &&
+                        member.is_active &&
                             <div key={member.id} >
                                 <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
                                     <div className={styles.game_body}>
@@ -226,8 +223,6 @@ const Game:React.FC = () => {
                                     </div>
                                 </Button>
                             </div>
-                        }
-                        </>
                     ))}
                 </div>
                 

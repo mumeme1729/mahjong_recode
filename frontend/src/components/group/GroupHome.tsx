@@ -3,10 +3,21 @@ import { useHistory, useParams } from 'react-router-dom';
 import { PROPS_BELONG_TO_GROUP } from '../types'
 import { AppDispatch } from "../../app/store";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAsyncCreateRate, fetchAsyncGetGameResults, fetchAsyncGetGroup,fetchAsyncParticipationGroup,fetchAsyncRateIsActive,selecGroup, selectGameResults, setOpenSettings } from './groupSlice';
+import { 
+    endLoad,
+    fetchAsyncCreateRate, 
+    fetchAsyncGetGameResults, 
+    fetchAsyncGetGroup,
+    fetchAsyncParticipationGroup,
+    fetchAsyncRateIsActive,selecGroup, 
+    selectGameResults, 
+    selectIsStartLoad, 
+    setOpenSettings, 
+    startLoad 
+} from './groupSlice';
 import styles from "./Group.module.css";
 import GameResults from './GameResults';
-import { Button, makeStyles, TextField,} from '@material-ui/core';
+import { Button, CircularProgress, makeStyles, TextField,} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,10 +31,12 @@ import {
     TwitterIcon,
     LineShareButton,
     LineIcon,
+    EmailShareButton,
+    EmailIcon,
 } from 'react-share'
 import Modal from "react-modal";
 import GroupSettings from './GroupSettings';
-
+import groupImage from '../auth/fish_shark.png';
 const modalStyle={
     overlay: {
         background: 'rgba(0, 0, 0, 0.2)',
@@ -47,6 +60,7 @@ const GroupHome:React.FC = () => {
     const group=useSelector(selecGroup);
     const groupmember=group.profile;
     const gameresults=useSelector(selectGameResults);
+    const isload=useSelector(selectIsStartLoad);
     const loginuserprofile=useSelector(selectLoginUserProfile);
     const [istrue,setIsTrue]=useState(false);
     const [password,setPassword]=useState("");
@@ -54,6 +68,7 @@ const GroupHome:React.FC = () => {
     const [notmatchpass,setNotMatchPass]=useState(false);
     useEffect(()=>{
         const fetchLoader = async ()=>{
+            dispatch(startLoad())
             if (localStorage.localJWT) {
                 const results=await dispatch(fetchAsyncGetGroup(params.id));
                 if(fetchAsyncGetGroup.fulfilled.match(results)){
@@ -86,27 +101,17 @@ const GroupHome:React.FC = () => {
                         setIsTrue(isParti.includes(true))
                     }
                 }
-                await dispatch(fetchAsyncGetGameResults(params.id));
+                const res=await dispatch(fetchAsyncGetGameResults(params.id));
+                if(fetchAsyncGetGameResults.fulfilled.match(res)){
+                    dispatch(endLoad())
+                }
+                
             }
         };
         fetchLoader();
     },[]);
 
-    //グループから抜ける
-    const leaveGroup=async()=>{
-        let rate_id:number=0;
-            console.log(groupmember)
-            groupmember.forEach((gm)=>{
-                if(gm.userProfile===loginuserprofile.userProfile){
-                    rate_id=gm.rate_id
-                }
-            })
-        const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:false}
-        const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
-        if(fetchAsyncRateIsActive.fulfilled.match(results)){
-            history.push('/home');
-        }
-    }
+
     //グループに参加
     const participationGroup=async()=>{
         if(group.password==="" || group.password===null){
@@ -190,107 +195,115 @@ const GroupHome:React.FC = () => {
             <GroupSettings/>
             <br/>
             <Button variant="outlined" color="primary" onClick={()=>history.push(`/home/`)}>ホーム</Button>
-            <div className={styles.group_home_container}>
-                <div className={styles.group_home_body_container}>
-                    <div className={styles.group_home_body_top}>
-                        <div  className={styles.group_home_body_top_groupinfo}>
-                            <div className={styles.group_home_body_top_groupinfo_container}>
-                                <div>
-                                    <img src={group.img} className={styles.group_img}/>
-                                </div>
-                                <div className={styles.group_home_body_top_groupinfo_title}>
-                                    <div className={styles.group_home_title}>
-                                        <h2 className={styles.group_title_h2}>{group.title}</h2>
-                                        <div className={styles.group_home_title_p}>
-                                        <p>({groupmember.filter((g)=>{return g.is_active}).length})</p>
-                                        </div>
-                                    </div>
-                                    {group.text}
-                                    <div className={styles.share_btn}>
-                                        <div>
-                                        <FacebookShareButton url={`http://localhost:8080/group/${params.id}` } >
-                                            <FacebookIcon  round size='50px'/>
-                                        </FacebookShareButton>
-                                        </div>
-                                        <div className={styles.share_btn_icon}>
-                                        <TwitterShareButton url={`http://localhost:8080/group/${params.id}`}>
-                                            <TwitterIcon  round size='50px'/>
-                                        </TwitterShareButton>
-                                        </div>
-                                        <div className={styles.share_btn_icon}>
-                                        <LineShareButton url={`http://localhost:8080/group/${params.id}`}>
-                                            <LineIcon size='50px'/>
-                                        </LineShareButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br/>
+            {isload?
+                <div className={styles.group_home_body_circular_container}>
+                    <div>
+                        <CircularProgress />
                     </div>
-
-                    <div className={styles.group_home_body}>
-                        {istrue?
-                        <>
-                        <div className={styles.group_home_container_left}>
-                            <div className={styles.group_home_menu}>
-                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/game`)}}>
-                                    <h3 className={styles.hgrouphome_menu_btn_h3}>対局 </h3>　
-                                </div>
-                                <br/>
-                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/member`)}}>
-                                    <h3 className={styles.hgrouphome_menu_btn_h3}>メンバー</h3>
-                                </div>
-                                <br/>
-                                <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
-                                    <h3 className={styles.hgrouphome_menu_btn_h3}>対局記録</h3>
-                                </div>
-                                <br/>
-                                <div className={styles.grouphome_btn} onClick={()=>{dispatch(setOpenSettings())}}>
-                                    <h3 className={styles.hgrouphome_menu_btn_h3}>　設定　</h3>
-                                </div>
-                                {/* <Button
-                                    // disabled={password!==group.password}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={()=>{leaveGroup()}}
-                                >
-                                    グループから抜ける
-                                </Button> */}
-                            </div>
-                        </div>
-                        <div className={styles.group_home_container_right}>
-                            <div className={styles.group_home_container_right_bottom}>
-                                <div className={styles.group_home_results}>
-                                    <h3>直近の対局記録</h3>
-                                    {/* <TableContainer component={Paper} className={styles.group_home_table_container}> */}
-                                        <Table className={classes.table} size="small" aria-label="a dense table" >
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>日付</TableCell>
-                                                <TableCell>1位</TableCell>
-                                                <TableCell>2位</TableCell>
-                                                <TableCell>3位</TableCell>
-                                                <TableCell>4位</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        {gameresults.slice(0,7).map((gameresult)=>(
-                                          <TableBody  key={gameresult.id} className={styles.gameresult_container}>
-                                          <TableRow className={styles.gameresult_container}>
-                                             <TableCell  >{gameresult.created_at.slice(0,10)}</TableCell> 
-                                             <GameResults {...gameresult}/>
-                                          </TableRow>
-                                          </TableBody>
-                                        ))}
-                                        </Table>
-                                    {/* </TableContainer> */}
-                                </div>
-                            </div>
-                        </div>
-                        </>:<div><Button onClick={()=>{participationGroup()}}>グループに参加</Button></div>}
-                    </div>    
                 </div>
-            </div>
+            :         
+                <div className={styles.group_home_container}>
+                    <div className={styles.group_home_body_container}>
+                        <div className={styles.group_home_body_top}>
+                            <div  className={styles.group_home_body_top_groupinfo}>
+                                <div className={styles.group_home_body_top_groupinfo_container}>
+                                    <div>
+                                        {group.img!==null?
+                                            <img src={group.img} className={styles.group_img}/>
+                                        :   <img src={groupImage} className={styles.group_img}/>
+                                        }
+                                    </div>
+                                    <div className={styles.group_home_body_top_groupinfo_title}>
+                                        <div className={styles.group_home_title}>
+                                            <h2 className={styles.group_title_h2}>{group.title}</h2>
+                                        </div>
+                                        {group.text}
+                                        <div className={styles.share_btn}>
+                                            <div>
+                                            <FacebookShareButton url={`http://localhost:8080/group/${params.id}` } >
+                                                <FacebookIcon  round size='50px'/>
+                                            </FacebookShareButton>
+                                            </div>
+                                            <div className={styles.share_btn_icon}>
+                                            <TwitterShareButton url={`http://localhost:8080/group/${params.id}`}>
+                                                <TwitterIcon  round size='50px'/>
+                                            </TwitterShareButton>
+                                            </div>
+                                            <div className={styles.share_btn_icon}>
+                                            <LineShareButton url={`http://localhost:8080/group/${params.id}`}>
+                                                <LineIcon size='50px'/>
+                                            </LineShareButton>
+                                            </div>
+                                            <div className={styles.share_btn_icon}>
+                                            <EmailShareButton url={`http://localhost:8080/group/${params.id}`}>
+                                                <EmailIcon size='50px'/>
+                                            </EmailShareButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                        </div>
+                        <div className={styles.group_home_body}>
+                            {istrue?
+                            <>
+                                <div className={styles.group_home_container_left}>
+                                    <div className={styles.group_home_menu}>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/game`)}}>
+                                            <h3 className={styles.hgrouphome_menu_btn_h3}>対局 </h3>　
+                                        </div>
+                                        <br/>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/member`)}}>
+                                            <h3 className={styles.hgrouphome_menu_btn_h3}>メンバー</h3>
+                                        </div>
+                                        <br/>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
+                                            <h3 className={styles.hgrouphome_menu_btn_h3}>対局記録</h3>
+                                        </div>
+                                        <br/>
+                                        <div className={styles.grouphome_btn} onClick={()=>{dispatch(setOpenSettings())}}>
+                                            <h3 className={styles.hgrouphome_menu_btn_h3}>　設定　</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.group_home_container_right}>
+                                    <div className={styles.group_home_container_right_bottom}>
+                                        <div className={styles.group_home_results}>
+                                            <h3 className={styles.hgrouphome_menu_btn_h3}>直近の対局記録</h3>
+                                                <Table className={classes.table} size="small" aria-label="a dense table" >
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell><p className={styles.results_table_p}>日付</p></TableCell>
+                                                        <TableCell><p className={styles.results_table_p}>1位</p></TableCell>
+                                                        <TableCell><p className={styles.results_table_p}>2位</p></TableCell>
+                                                        <TableCell><p className={styles.results_table_p}>3位</p></TableCell>
+                                                        <TableCell><p className={styles.results_table_p}>4位</p></TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                {gameresults.slice(0,7).map((gameresult)=>(
+                                                <TableBody  key={gameresult.id} className={styles.gameresult_container}>
+                                                    <GameResults  {...gameresult}/>
+                                                </TableBody>
+                                                ))}
+                                                </Table>
+                                            {/* </TableContainer> */}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>:
+                                <div className={styles.participation_btn_container}>
+                                    <div className={styles.participation_btn_body}>
+                                        <Button className={styles.participation_btn} onClick={()=>{participationGroup()}}>
+                                            <h3 className={styles.participation_btn_h3}>グループに参加</h3>
+                                        </Button>
+                                    </div>
+                                </div>
+                            }
+                        </div>   
+                    </div>
+                </div>
+            }
             <Modal
             isOpen={isopenpasswordwindow}
             onRequestClose={()=>{

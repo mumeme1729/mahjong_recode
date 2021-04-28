@@ -4,18 +4,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
 import {Button,TextField} from "@material-ui/core";
 import {Link,useHistory, useLocation} from 'react-router-dom';
+import styles from './Auth.module.css';
 import * as Yup from "yup";
 import {
     setOpenSignIn,
     fetchAsyncLogin,
     fetchAsyncGetMyProf,
-    fetchAsyncCreateProf
+    fetchAsyncCreateProf,
+    resetOpenSignIn,
+    fetchAsyncGetUser
 } from './authSlice';
 import { resetBackUrl, selectBackUrl } from '../home/homeSlice';
 
 const Login:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const [successLogin,setSuccessLogin]=useState(false);
+    const [falseLogin,setfalseLogin]=useState(false);
     const history = useHistory();
     const location = useLocation();
     const backurl=useSelector(selectBackUrl);
@@ -28,22 +31,30 @@ const Login:React.FC = () => {
                 onSubmit={async (values) => {
                     const result = await dispatch(fetchAsyncLogin(values));
                     if (fetchAsyncLogin.fulfilled.match(result)) {
-                        const login=await dispatch(fetchAsyncGetMyProf());
-                        if(login.payload.length===0){
-                            await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
-                        }
-                        console.log(backurl)
-                        if(!backurl.includes('/group')){
-                            console.log('go home')
-                            history.push('/home');
+                        if(result.payload.detail!=="No active account found with the given credentials"){
+                            const login=await dispatch(fetchAsyncGetMyProf());
+                            if(login.payload.length===0){
+                                await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
+                            }
+                            if(!backurl.includes('/group')){
+                                history.push('/home');
+                            }else{
+                                history.push(backurl);
+                                dispatch(resetBackUrl());
+                            }
                         }else{
-                            history.push(backurl);
-                            dispatch(resetBackUrl());
+                            //有効化されていない
+                            values.email="";
+                            values.password="";
+                            setfalseLogin(true);
                         }
                     }else{
+                        //fetch失敗
                         values.email="";
                         values.password="";
-                    }   
+                        setfalseLogin(true);
+                    } 
+                    
                 }}
                 //バリデーション
                 validationSchema={Yup.object().shape({
@@ -66,9 +77,9 @@ const Login:React.FC = () => {
                         {/* <div className="css_styles.auth_progress">
                             {isLoadingAuth && <CircularProgress />}
                         </div> */}
-
+                        {falseLogin?<p className={styles.login_failure_p}>ログインに失敗しました</p>:null}
                         <div className="">
-                            <h2>ログイン</h2>
+                            <h2 className={styles.login_signup_h2}>ログイン</h2>
                         </div>
                     
                         <form onSubmit={handleSubmit}>
@@ -102,12 +113,17 @@ const Login:React.FC = () => {
                                 
                                 <div className="">
                                     <Button variant="contained" color="primary" disabled={!isValid} type="submit">ログイン</Button>
-                                    <div className="">
-                                        <span onClick={async () => {
-                                            dispatch(setOpenSignIn());              
+                                    <div className={styles.switch_login_signup_btn_container}>
+                                        <span className={styles.switch_login_signup_btn} onClick={async () => {
+                                            dispatch(resetOpenSignIn());              
                                         }}>
                                             アカウントをお持ちでない方はこちら
                                         </span>
+                                    </div>
+                                    <div className={styles.switch_login_signup_btn_container}>
+                                        <Link to='/password/reset' className={styles.link_border}>
+                                            <span className={styles.switch_login_signup_btn}>パスワードをお忘れですか？</span>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

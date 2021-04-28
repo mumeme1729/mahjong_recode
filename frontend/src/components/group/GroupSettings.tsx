@@ -20,7 +20,7 @@ const modalStyle={
       left: "50%",
       backgroundColor: 'white',
       width: 260,
-      height: 480,
+      height: 520,
       transform: "translate(-50%, -50%)",
       },
 };
@@ -34,7 +34,7 @@ const modalStyle2={
       left: "50%",
       backgroundColor: 'white',
       width: 280,
-      height: 150,
+      height: 180,
       transform: "translate(-50%, -50%)",
       },
 };
@@ -97,7 +97,7 @@ const GroupSettings:React.FC = () => {
                 ariaHideApp={false}
             >   
                 {group.img!==null?
-                    <img src={group.img} onClick={()=>{dispatch(setOpenGroupImageTrimming())}} width="170px" height="190px" className={styles.groupsetting_modal_img}/>
+                    <img src={group.img} onClick={()=>{dispatch(setOpenGroupImageTrimming())}} width="150px" height="170px" className={styles.groupsetting_modal_img}/>
                 :
                 <IconButton onClick={()=>{dispatch(setOpenGroupImageTrimming())}}>
                     <PhotoLibraryIcon /> 画像を選択
@@ -105,26 +105,40 @@ const GroupSettings:React.FC = () => {
                 <GroupImageTrimming/>
                 <br/>
                 <div>
-                    {title}
                     <TextField placeholder="名前" type="text" defaultValue={group.title} label="グループ名" 
-                        onChange={(e) => setTitle(e.target.value)}/>
+                        helperText={`${title.length}/30`}
+                        onChange={(e) => {
+                            if(e.target.value.length<=30){
+                                setTitle(e.target.value)
+                            }
+                        }}/>
                 </div>
-                <br />
                     <TextField placeholder="紹介" type="text" defaultValue={group.text} multiline fullWidth label="紹介"
-                        onChange={(event) => setText(event.target.value)}/>
+                        helperText={`${text.length}/200`}
+                        onChange={(event) => {
+                            if(event.target.value.length<=199){
+                                setText(event.target.value)
+                            }
+                        }}/>
                 <br />
                 <br />
                     <TextField placeholder="パスワード" type="text" defaultValue={group.password} multiline fullWidth label="パスワード"
-                        onChange={(event) => setPassword(event.target.value)}/>
+                        onChange={(event) => {
+                            if(event.target.value.length<=199){
+                                setPassword(event.target.value)
+                            }
+                        }}/>
                 <br />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    onClick={updateGroup}
-                >
-                    更新
-                </Button>
+                <div className={styles.groupsetting_btn}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        onClick={updateGroup}
+                    >
+                        更新
+                    </Button>
+                </div>
                 <br/>
                 <p
                     onClick={()=>{openConfirmModal()}}

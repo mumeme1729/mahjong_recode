@@ -7,6 +7,7 @@ import { AppDispatch } from '../../app/store';
 import { fetchAsyncActivateUser, fetchAsyncCreateProf, fetchAsyncGetMyProf, fetchAsyncLogin } from './authSlice';
 import * as Yup from "yup";
 import { resetBackUrl, selectBackUrl } from '../home/homeSlice';
+import styles from './Auth.module.css';
 
 const Activate:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -25,7 +26,6 @@ const Activate:React.FC = () => {
     return (
 
         <div　className="auth_container">
-            登録が完了しました。以下のログインフォームよりログインしてください
             <Formik
                 initialErrors={{ email: "required" }}
                 initialValues={{ email: "", password: ""}}
@@ -66,17 +66,16 @@ const Activate:React.FC = () => {
                 touched,
                 isValid,
             }) => (
-                    <div className="auth_login_main_container">
-                        {/* <div className="css_styles.auth_progress">
-                            {isLoadingAuth && <CircularProgress />}
-                        </div> */}
-
-                        <div className="">
-                            <h2>ログイン</h2>
+                    <div className={styles.auth_login_main_container}>
+                       <div className={styles.auth_login_main_body}>
+                           <p className={styles.auth_activate_p}> 登録が完了しました</p>
+                           <p className={styles.auth_activate_p}> 以下のログインフォームよりログインしてください</p>
+                        <div className={styles.auth_login_title_container}>
+                            <h2 className={styles.auth_login_h2}>ログイン</h2>
                         </div>
                     
                         <form onSubmit={handleSubmit}>
-                            <div >
+                            <div className={styles.auth_login_title_container}>
                                 <TextField
                                     placeholder="email"
                                     type="input"
@@ -103,13 +102,12 @@ const Activate:React.FC = () => {
                                 ) : null}
                                 <br />
                                 <br/>
-                                
-                                <div className="">
+                                <div className={styles.activate_login_btn}>
                                     <Button variant="contained" color="primary" disabled={!isValid} type="submit">ログイン</Button>
-                                    
                                 </div>
                             </div>
                         </form>
+                        </div>
                     </div>
                 )}
             </Formik>

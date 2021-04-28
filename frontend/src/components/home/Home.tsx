@@ -24,6 +24,8 @@ const Home:React.FC = () => {
                 if (fetchAsyncGetMyProf.rejected.match(result)) {
                     history.push('/')
                 }
+              }else{
+                history.push('/')
               }
             };
         fetchLoader();
@@ -35,15 +37,10 @@ const Home:React.FC = () => {
             <div className={styles.home_container}>
                 {belongtogroup.length!==0 && belongtogroup[0].id!==0?
                 <div className={styles.home_grouplist_container}>
-                    {belongtogroup.map((group)=>(
-                        <>
-                        {group.profile.map((prof)=>(
-                            <>
-                            {prof.is_active &&prof.userProfile===loginUserProfile.userProfile && <BelongToGroupList key={group.id} {...group}/>}
-                            </>
-                        ))}
-                         {/* <BelongToGroupList key={group.id} {...group}/> */}
-                        </>
+                    {belongtogroup.map((group)=>( 
+                        group.profile.map((prof)=>(
+                            prof.is_active &&prof.userProfile===loginUserProfile.userProfile && <BelongToGroupList key={group.id} {...group}/>
+                        ))
                     ))}
                 </div>
                 :<>参加しているグループはありません</>}

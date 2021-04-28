@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP');
 /* ヘッダー */
 .header_container{
    height: 70px; 
@@ -10,6 +11,27 @@
     display: flex;
     justify-content: space-between;
     background-color: rgb(169, 249, 255);
+}
+.header_link{
+    text-decoration: none; 
+    color:black;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 17px;
+}
+.header_title_h3{
+    font-family: 'Noto Sans JP', sans-serif;
+    width: 220px;
+}
+.header_img{
+    margin-left: 10px;
+}
+.header_nickname{
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 17px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .header_body_left{
     margin-left: 5%;
@@ -30,12 +52,20 @@
     flex-wrap: wrap;
     justify-content: center;
 }
+/* グループ作成 */
+.create_group_container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin-top:15px;
+    margin-bottom:10px;
+}
 
 /* グループ一覧 */
 .belong_to_group_container{
     width: 150px;
     height: 250px;
-    border: solid;
+    border: solid skyblue;
 }
 .belong_to_group_body_top{
     height: 170px;
@@ -49,6 +79,19 @@
 }
 .belong_to_group_body_bottom{
     text-align: center;
+}
+.belong_to_group_h3{
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* プロフィール */
+
+.profile_btn{
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
 }
 /* イメージトリミング */
 .image_trimming_container{
@@ -91,7 +134,27 @@
     width: 220px;
     transform: translate(-30%,80%);
 }
-
+/* フッター */
+.footer_container{
+    text-align: center;
+    margin-top: 250px;
+    bottom: 0; /*下に固定*/
+}
+.footer_link{
+    text-decoration: none; 
+    color:black;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+}
+/* お問い合わせ */
+.contact_container{
+    display: flex;
+    justify-content: center;
+}
+.contact_body{
+    width: 300px;
+    text-align: center;
+}
 @media screen and (max-width: 500px) {
     .header_title_h3{
         display: none;

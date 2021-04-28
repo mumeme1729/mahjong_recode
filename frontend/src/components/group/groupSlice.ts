@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN,PROPS_CREATE_GAME,PROPS_CREATE_GAME_RESLTS,PROPS_CREATE_GROUP, PROPS_CREATE_RATE, PROPS_PARTICIPATION, PROPS_RATE, PROPS_RATE_IS_ACTIVE, PROPS_UPDATE_GROUP, PROPS_UPDATE_GROUP_IMAGE} from '../types'
+import {PROPS_AUTHEN,PROPS_CREATE_GAME,PROPS_CREATE_GAME_RESLTS,PROPS_CREATE_GROUP, PROPS_CREATE_RATE, PROPS_EDIT_GAME_RESULTS, PROPS_PARTICIPATION, PROPS_RATE, PROPS_RATE_IS_ACTIVE, PROPS_UPDATE_GROUP, PROPS_UPDATE_GROUP_IMAGE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -124,7 +124,7 @@ export const fetchAsyncDeleteGame = createAsyncThunk(
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     })
-    return res.data;
+    return id;
   }
 );
 //スコア記録
@@ -138,6 +138,21 @@ export const fetchAsyncCreateGameResults=createAsyncThunk(
       },
     })
     return res.data;
+  }
+);
+//スコア更新
+export const fetchAsyncEditGameResults=createAsyncThunk(
+  "gameresults/patch",
+  async (game_results: PROPS_EDIT_GAME_RESULTS) => {
+    const res = await axios.patch(`${apiUrl}mahjong/gameresults/${game_results.id}/`, game_results, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.localJWT}`,
+      },
+    }).catch(error => {
+      console.log(error.response)
+    });
+    //return res.data;
   }
 );
 //レート更新
@@ -192,6 +207,7 @@ export const groupSlice=createSlice({
     initialState:{
       isOpenSettings:false,
       isopengroupimagetrimming:false,
+      isload:false,
         group:{
             id: 0,
             title: "",
@@ -262,6 +278,12 @@ export const groupSlice=createSlice({
       resetOpenGroupImageTrimming(state) {
         state.isopengroupimagetrimming = false;
       },
+      startLoad(state){
+        state.isload=true;
+      },
+      endLoad(state){
+        state.isload=false;
+      }
     },
     extraReducers:(builder)=>{
       builder.addCase(fetchAsyncGetGroup.fulfilled, (state, action) => {
@@ -286,6 +308,13 @@ export const groupSlice=createSlice({
         state.group.text=action.payload.text;
         state.group.password=action.payload.password;
       });
+      builder.addCase(fetchAsyncDeleteGame.fulfilled,(state,action)=>{
+          return {
+            ...state,
+            gameresults:state.gameresults.filter((g)=>g.id!==action.payload),
+          };
+      });
+
     },
 });
 
@@ -294,6 +323,8 @@ export const {
  resetOpenSettings,
  setOpenGroupImageTrimming,
  resetOpenGroupImageTrimming,
+ startLoad,
+ endLoad,
 } = groupSlice.actions;
 
 export const selecGroup=(state:RootState)=>state.group.group;
@@ -301,4 +332,5 @@ export const selectGameResults=(state:RootState)=>state.group.gameresults;
 export const selectOpenSettings=(state:RootState)=>state.group.isOpenSettings;
 export const selectOpenGroupImageTrimming=(state:RootState)=>state.group.isopengroupimagetrimming;
 export const selectSelectProfile=(state:RootState)=>state.group.profile;
+export const selectIsStartLoad=(state:RootState)=>state.group.isload;
 export default groupSlice.reducer;

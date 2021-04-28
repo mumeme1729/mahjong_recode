@@ -30,7 +30,6 @@ const GroupImageTrimming:React.FC = () => {
   const [zoom, setZoom] = useState(1);
   const isopengroupimagetrimming=useSelector(selectOpenGroupImageTrimming);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
-  //const profile=useSelector(selectLoginUserProfile);
   const group=useSelector(selecGroup);
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)

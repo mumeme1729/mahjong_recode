@@ -10,7 +10,7 @@ import { fetchAsyncCreateGroup } from './homeSlice';
 import { selectLoginUserProfile } from '../auth/authSlice';
 import { fetchAsyncCreateRate, fetchAsyncParticipationGroup } from '../group/groupSlice';
 import { useHistory } from 'react-router-dom';
-
+import styles from "./Home.module.css";
 const modalStyle={
     overlay: {
         background: 'rgba(0, 0, 0, 0.2)',
@@ -44,23 +44,16 @@ const Search:React.FC = () => {
     };
 
     const newGroup = async (e: React.MouseEvent<HTMLElement>) => {
-        console.log("サーチ")
         e.preventDefault();
         const packet = { title: groupName,text:text,password:password,img: image,};
-        //console.log(packet)
         const results=await dispatch(fetchAsyncCreateGroup(packet));
-        console.log(fetchAsyncCreateGroup.fulfilled.match(results))
         const group_id=results.payload.id;
-        console.log(group_id)
         if(fetchAsyncCreateGroup.fulfilled.match(results)){
             let member:number[]=[]
             member.push(loginuserprofile.userProfile);
-            console.log(member)
             const pkt={id:group_id,userGroup:member}
             const results=await dispatch(fetchAsyncParticipationGroup(pkt));
-            console.log(fetchAsyncParticipationGroup.fulfilled.match(results))
             if(fetchAsyncParticipationGroup.fulfilled.match(results)){
-                console.log("rate")
                 const rate_pkt={group_id:group_id,user_id:loginuserprofile.userProfile,is_active:true}
                 const rate_results=await dispatch(fetchAsyncCreateRate(rate_pkt));
                 if(fetchAsyncCreateRate.fulfilled.match(rate_results)){
@@ -80,18 +73,11 @@ const Search:React.FC = () => {
       }
     return (
         <>
-            <div>
-                <TextField
-                    id="group"
-                    label="グループ"
-                    type="text"
-                    fullWidth
-                    onChange={(e)=>setGroup(e.target.value)}
-                    defaultValue={group}
-                />
-                <Button variant="contained" color="primary" onClick={()=>setOpenModal(true)}>グループ作成</Button>
+            <div className={styles.create_group_container}>
+                <div>
+                    <Button variant="contained" color="primary" onClick={()=>setOpenModal(true)}>グループを作る</Button>
+                </div>
             </div>
-
             <Modal
                 isOpen={openModal}
                 onRequestClose={()=>{
@@ -107,14 +93,24 @@ const Search:React.FC = () => {
                     <br />
                     <TextField
                         placeholder="グループ名"
+                        helperText={`${groupName.length}/30`}
                         type="text"
-                        onChange={(e) => setGroupName(e.target.value)}
+                        onChange={(e) => {
+                            if(e.target.value.length<=30){
+                                setGroupName(e.target.value)
+                            }
+                        }}
                     />
                     <br/>
                     <TextField
                         placeholder="紹介文"
                         type="text"
-                        onChange={(e) => setText(e.target.value)}
+                        helperText={`${text.length}/200`}
+                        onChange={(e) => {
+                            if(e.target.value.length<=200){
+                                setText(e.target.value)
+                            }
+                        }}
                     />
                     <br/>
                     <TextField
@@ -137,12 +133,12 @@ const Search:React.FC = () => {
                     </div>
                     <br />
                     <Button
-                        disabled={!groupName}
+                        disabled={!(groupName &&groupName.length<=30)}
                         variant="contained"
                         color="primary"
                         onClick={newGroup}
                     >
-                        グループを作る
+                        作成
                     </Button>
                 </form>
             </Modal>

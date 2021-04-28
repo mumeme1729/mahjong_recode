@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {PROPS_AUTHEN, PROPS_PROFILE, PROPS_UPDATE_PROFILE, PROPS_UPDATE_PROFILE_IMAGE} from '../types'
+import {PROPS_AUTHEN, PROPS_PASSWORD_CONFIRM, PROPS_PROFILE, PROPS_UPDATE_PROFILE, PROPS_UPDATE_PROFILE_IMAGE} from '../types'
 
 const apiUrl = process.env.REACT_APP_DEV_API_URL;
 
@@ -9,15 +9,16 @@ const apiUrl = process.env.REACT_APP_DEV_API_URL;
 export const fetchAsyncRegister=createAsyncThunk(
     "auth/register",
     async (auth: PROPS_AUTHEN) => {
-        console.log(auth.email)
-        console.log(`${apiUrl}mahjong/register/`)
         const res = await axios.post(`${apiUrl}mahjong/register/`, auth, {
           headers: {
             "Content-Type": "application/json",
           },
+        }).catch(error=>{
+          //console.log(error.response)
+          return error.response
         });
         return res.data;
-      }
+    }
 );
 
 //有効化
@@ -29,6 +30,18 @@ export const fetchAsyncActivateUser = createAsyncThunk("activate/get", async (to
   });
   return res.data;
 });
+//ユーザーが存在するか
+export const fetchAsyncGetUser=createAsyncThunk(
+  "user/get",
+  async (email: string) => {
+    const res = await axios.get(`${apiUrl}mahjong/checkuser/${email}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  }
+);
 //プロフィール作成
 export const fetchAsyncCreateProf = createAsyncThunk(
   "profile/post",
@@ -88,6 +101,8 @@ export const fetchAsyncLogin = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+      }).catch(error=>{
+        return error.response
       });
       return res.data;
       //取得に成功したらローカルに保存
@@ -103,6 +118,35 @@ export const fetchAsyncGetMyProf = createAsyncThunk("profile/get", async () => {
   });
   return res.data[0];
 });
+//パスワードリセット
+export const fetchAsyncPasswordReset = createAsyncThunk(
+  "passwordreset/post",
+  async (email: {email:string}) => {
+    const res = await axios.post(`${apiUrl}mahjong/auth/password_reset/`, email, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch(error=>{
+      return error.response
+    });
+    return res.data;
+  }
+);
+//パスワード再設定
+export const fetchAsyncPasswordConfirm=createAsyncThunk(
+  "passwordconfirm/post",
+  async(password:PROPS_PASSWORD_CONFIRM)=>{
+    const res = await axios.post(`${apiUrl}rest-auth/password/reset/confirm/`, password, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch(error=>{
+      console.log(error.response)
+      return error.response
+    });
+    return res.data;
+  }
+);
 
 export const authSlice=createSlice({
     name:'auth',
@@ -128,7 +172,9 @@ export const authSlice=createSlice({
     extraReducers:(builder)=>{
         //ログインが成功したらjwtをローカルに保存
         builder.addCase(fetchAsyncLogin.fulfilled, (state, action) => {
-            localStorage.setItem("localJWT", action.payload.access);
+            if(action.payload.detail!=="No active account found with the given credentials"){
+              localStorage.setItem("localJWT", action.payload.access);
+            };
         });
         builder.addCase(fetchAsyncGetMyProf.fulfilled, (state, action) => {
           state.login_user_profile = action.payload;

@@ -7,6 +7,7 @@ import { AppDispatch } from '../../app/store';
 import { fetchAsyncUpdateProf, selectLoginUserProfile } from '../auth/authSlice';
 import { resetBackUrl, resetOpenProfile, selectIsOpenProfile, setImageTrimming } from './homeSlice';
 import ImageTrimming from './ImageTrimming';
+import styles from "./Home.module.css";
 
 const modalStyle={
     overlay: {
@@ -27,11 +28,13 @@ const Profile:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const isopenprofile=useSelector(selectIsOpenProfile);
     const profile=useSelector(selectLoginUserProfile);
-    const [name,setName]=useState(profile.nickName);
-    const [text,setText]=useState(profile.text);
+    const [name,setName]=useState("");
+    const [text,setText]=useState("");
     const history = useHistory();
     
     const updateProfile = async () => {
+        console.log(name)
+        console.log(text)
         const packet = { id: profile.id, nickName: name,text:text};
         await dispatch(fetchAsyncUpdateProf(packet));   
         dispatch(resetOpenProfile());
@@ -50,29 +53,34 @@ const Profile:React.FC = () => {
             }}
             style={modalStyle}
             ariaHideApp={false}
-            >
+        >
             <div>
-                
-                    <h2>プロフィールを編集</h2>
+                <h2>プロフィールを編集</h2>
+                <div>
+                    <Button onClick={()=>{dispatch(setImageTrimming())}}>
+                        <Avatar alt="who?" src={profile.img} style={{height:'70px',width:'70px'}}/>
+                    </Button>
+                    <ImageTrimming/>
                     <div>
-                        <Button onClick={()=>{dispatch(setImageTrimming())}}>
-                            <Avatar alt="who?" src={profile.img} style={{height:'70px',width:'70px'}}/>
-                        </Button>
-                        <ImageTrimming/>
-                        <div>
-                            <TextField placeholder="名前" type="text" defaultValue={profile.nickName} label="名前"
-                                onChange={(e) => setName(e.target.value)}/>
-                        </div>
+                        <TextField placeholder="名前" type="text" defaultValue={profile.nickName} label="名前"
+                            onChange={(e) => {
+                                if(e.target.value.length<=20){
+                                    setName(e.target.value)}
+                                }
+                            }/>
                     </div>
-                    <br />
-                    <TextField placeholder="自己紹介" type="text" defaultValue={profile.text} multiline fullWidth label="自己紹介"
-                        onChange={(event) => setText(event.target.value)}/>
-                    <br />
-                    <br />
-                    
-                    <div>
+                </div>
+                <br />
+                <TextField placeholder="自己紹介" type="text" defaultValue={profile.text} multiline fullWidth label="自己紹介"
+                    onChange={(event) => {
+                        if(event.target.value.length<=200){
+                            setText(event.target.value)
+                        }
+                    }}/>
+                
+                <div className={styles.profile_btn_container}>
+                    <div className={styles.profile_btn}>
                         <Button
-                            disabled={!name}
                             variant="contained"
                             color="primary"
                             type="submit"
@@ -81,16 +89,16 @@ const Profile:React.FC = () => {
                             プロフィール更新
                         </Button>
                     </div>
-                
-                <div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        onClick={logout}
-                    >
-                        ログアウト
-                    </Button>
+                    <div className={styles.profile_btn}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            onClick={logout}
+                        >
+                            ログアウト
+                        </Button>
+                    </div>
                 </div>
             </div> 
         </Modal>

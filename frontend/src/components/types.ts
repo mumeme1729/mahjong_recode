@@ -128,6 +128,11 @@ export interface PROPS_CREATE_GAME_RESLTS{
     rank:number;
     score:number;
 }
+export interface PROPS_EDIT_GAME_RESULTS{
+    id:number;
+    rank:number;
+    score:number;
+}
 export interface PROPS_UPDATE_GROUP{
     id:number;
     title:string;
@@ -141,4 +146,15 @@ export interface PROPS_UPDATE_GROUP_IMAGE{
     password:string;
     img:File | null;
     name:string;
+}
+export interface PROPS_CONTACT{
+    title:string;
+    sender:string;
+    message:string;
+}
+export interface PROPS_PASSWORD_CONFIRM{
+    new_password1:string;
+    new_password2:string;
+    uid:string;
+    token:string;
 }

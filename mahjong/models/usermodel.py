@@ -7,7 +7,7 @@ from datetime import datetime,timedelta
 from django.utils.timezone import make_aware
 from django.core.mail import send_mail
 from config import settings
-from django.core.mail import send_mail
+
 
 def upload_avatar_path(instance, filename):
     ext = filename.split('.')[-1]

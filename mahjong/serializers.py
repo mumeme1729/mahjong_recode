@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import UserActivate,Profile,Group,Game,GameResults,Rate
-
+from django.conf import settings
+from django.contrib.auth.forms import PasswordResetForm
+from rest_framework.exceptions import ValidationError
 # ユーザー
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +14,10 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = get_user_model().objects.create_user(**validated_data)
         return user
+class UserViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id','email')
 
 #有効化
 class ActivateSerializer(serializers.ModelSerializer):
@@ -105,11 +111,42 @@ class ResultsForEachGroupSerializer(serializers.ModelSerializer):
          except:
              results_abstruct_contents=None
              return results_abstruct_contents
-    
 
+class ContactSerailizer(serializers.Serializer):
+    title= serializers.CharField()
+    sender= serializers.EmailField()
+    message= serializers.CharField()   
 
+# パスワード変更　テスト
+class PasswordResetSerializer(serializers.Serializer):
+    email=serializers.EmailField()
+    password_reset_form_class = PasswordResetForm
 
+    def get_email_options(self):
+        """Override this method to change default e-mail options"""
+        data = {
+            'email_template_name': 'email/password_reset.html',
+            'subject_template_name': 'email/password_reset_subject.txt'
+        }
+        return data
 
+    def validate_email(self, value):
+        # Create PasswordResetForm with the serializer
+        self.reset_form = self.password_reset_form_class(data=self.initial_data)
+        if not self.reset_form.is_valid():
+            raise serializers.ValidationError(self.reset_form.errors)
+        return value
+
+    def save(self):
+        request = self.context.get('request')
+        # Set some values to trigger the send_email method.
+        opts = {
+            'use_https': request.is_secure(),
+            'from_email': getattr(settings, 'EMAIL_HOST_USER'),
+            'request': request,
+        }
+        opts.update(self.get_email_options())
+        self.reset_form.save(**opts)
 
    
     

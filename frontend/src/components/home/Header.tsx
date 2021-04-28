@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react'
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { AppDispatch } from "../../app/store";
 import { fetchAsyncGetMyProf, selectLoginUserProfile } from '../auth/authSlice';
 import { fetchAsyncGetBelongToGroup, resetBackUrl, setBackUrl, setOpenProfile } from './homeSlice';
@@ -30,8 +30,9 @@ const Header:React.FC = () => {
             }else{
                 if(!location.pathname.includes('/activate')){
                     dispatch(setBackUrl(location.pathname));
-                    console.log(location.pathname);
-                    history.push('/');
+                    if(!location.pathname.includes('/password_confirm')){
+                        history.push('/');
+                    }
                 }
             }
         };
@@ -49,23 +50,31 @@ const Header:React.FC = () => {
             {location.pathname!=='/'?
             <div className={styles.header_container}>
                 <div className={styles.header_body}>
-                    <div className={styles.header_body_left}>
-                        <h3 className={styles.header_title_h3}>グループ麻雀レコード</h3>
-                        <img src={img} width="70px" height="70px"/>
-                    </div>
-                    <div className={styles.header_body_right}>
-                        <div>
-                            <p>{loginUserProfile.nickName}</p>  
+                    <Link to='/home' className={styles.header_link}>
+                        <div className={styles.header_body_left}>
+                            <h3 className={styles.header_title_h3} >
+                                グループ麻雀レコード
+                            </h3>
+                            <img src={img} className={styles.header_img} width="70px" height="70px"/>    
                         </div>
-                        <div>
-                            <Button
-                                onClick={()=>{dispatch(setOpenProfile())}}
-                            >
-                                <Avatar alt="who?" src={loginUserProfile.img} style={{height:'60px',width:'60px'}}/>
-                            </Button>
+                    </Link>
+                    {location.pathname.includes('/activate') || location.pathname.includes('/password')?
+                    <div></div>
+                    :
+                        <div className={styles.header_body_right}>
+                            <div>
+                                <p className={styles.header_nickname}>{loginUserProfile.nickName}</p>  
+                            </div>
+                            <div>
+                                <Button
+                                    onClick={()=>{dispatch(setOpenProfile())}}
+                                >
+                                    <Avatar alt="who?" src={loginUserProfile.img} style={{height:'60px',width:'60px'}}/>
+                                </Button>
+                            </div>
+                            <Profile />
                         </div>
-                        <Profile />
-                    </div>
+                    }
                 </div>
             </div>
             :null}
