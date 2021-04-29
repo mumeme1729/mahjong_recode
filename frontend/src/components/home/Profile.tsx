@@ -37,6 +37,7 @@ const Profile:React.FC = () => {
         let updateText=text;
         if(updateName===""){updateName=profile.nickName}
         if(updateText===""){updateText=profile.text}
+        if(updateText===null){updateText=""}
         const packet = { id: profile.id, nickName: updateName,text:updateText};
         await dispatch(fetchAsyncUpdateProf(packet));   
         dispatch(resetOpenProfile());

@@ -175,7 +175,6 @@ const Game:React.FC = () => {
             history.push(`/group/${params.id}`)
         };
     }
-    const url='http://127.0.0.1:8000'
     return (
         <>  
             <br/>
@@ -197,7 +196,7 @@ const Game:React.FC = () => {
                                                 <div>
                                                     <div className={styles.game_avater}>
                                                         {member.img!==""?
-                                                        <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                        <Avatar alt="who?" src={member.img} style={{height:'70px',width:'70px'}}/>
                                                         :null}
                                                     </div>
                                                     <div>
@@ -210,7 +209,7 @@ const Game:React.FC = () => {
                                                 <div className={styles.game_selected_profile}>
                                                     <div className={styles.game_avater}>
                                                         {member.img!==""?
-                                                        <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                        <Avatar alt="who?" src={member.img} style={{height:'70px',width:'70px'}}/>
                                                         :null}
                                                     </div>
                                                     <div>

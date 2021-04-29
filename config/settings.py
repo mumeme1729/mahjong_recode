@@ -27,9 +27,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +42,7 @@ INSTALLED_APPS = [
     'mahjong.apps.MahjongConfig',
     'corsheaders',
     'rest_auth',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -110,6 +108,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -148,7 +147,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -171,3 +170,40 @@ else:
     
     SECRET_KEY =env('SECRET_KEY')
     ALLOWED_HOSTS=['*']
+
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mahjong_db',
+        'HOST':'localhost',
+        'PORT':'',
+        'USER':'db_mahjong',
+        'PASSWORD':env('PASSWORD')
+    }
+}
+
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+    # S3
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    AWS_LOCATION = 'static'
+    AWS_DEFAULT_ACL = None
+    STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    DEFAULT_FILE_STORAGE = 'mahjong.storage_backends.MediaStorage'
+
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.googlemail.com'
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'mahjon.score1027@gmail.com'
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+    #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

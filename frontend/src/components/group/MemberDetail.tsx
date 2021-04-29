@@ -66,7 +66,7 @@ const MemberDetail:React.FC = () => {
         });
     
     const classes = useStyles();
-    const url='http://127.0.0.1:8000'
+    
     //平均ランク
     let average_rank=0;
     let top_rate=0;
@@ -150,9 +150,9 @@ const MemberDetail:React.FC = () => {
                 <div className={styles.memberdetail_prof}>
                     {img!==""?
                         <div className={styles.memberdetail_prof_avatar}>
-                            {img[0]!=="h"?
-                                <Avatar alt="who?" src={url+img} style={{height:'80px',width:'80px'}}/>
-                            :   <Avatar alt="who?" src={img} style={{height:'80px',width:'80px'}}/>}
+                            
+                            <Avatar alt="who?" src={img} style={{height:'80px',width:'80px'}}/>
+                            
                         </div>
                     :null}
                     <div className={styles.memberdetail_prof_p_container}>
@@ -229,7 +229,7 @@ const MemberDetail:React.FC = () => {
                     </Table>
                 </div>
             </div>
-            :<div>対局記録がありません</div>}
+            :<div className={styles.match_recode_not_exist}>対局記録がありません</div>}
         </div>
     )
 }

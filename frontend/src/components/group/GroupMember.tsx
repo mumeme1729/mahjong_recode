@@ -68,7 +68,6 @@ const GroupMember:React.FC = () => {
         }  
     }
 
-    const url='http://127.0.0.1:8000'
     return (
         <div>
             <br/>
@@ -93,7 +92,7 @@ const GroupMember:React.FC = () => {
                                         <div>
                                             <div className={styles.game_avater}>
                                                 {mem.img!==""?
-                                                <Avatar alt="who?" src={url+mem.img} style={{height:'70px',width:'70px'}}/>
+                                                <Avatar alt="who?" src={mem.img} style={{height:'70px',width:'70px'}}/>
                                                 :null}
                                             </div>
                                             <div>
