@@ -115,6 +115,6 @@ def publish_token(sender,instance,**kwargs):
                     
                    '''
 
-        from_email = 'mahjon.score1027@gmail.com'  # 送信者
+        from_email = 'mahjong.score1027@gmail.com'  # 送信者
         to = [activate_token.user]  # 宛先
         send_mail(subject, message, from_email, to)

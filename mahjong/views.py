@@ -126,7 +126,7 @@ class ContactView(APIView):
                         {message}
                         
                        '''
-            from_email = 'mahjon.score1027@gmail.com'  # 送信者
+            from_email = 'mahjong.score1027@gmail.com'  # 送信者
             to = ['mumeme.exe@gmail.com']  # 宛先
             send_mail(subject, msg, from_email, to)
     
