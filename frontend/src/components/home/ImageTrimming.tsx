@@ -34,7 +34,7 @@ const ImageTrimming:React.FC = () => {
   const profile=useSelector(selectLoginUserProfile);
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
-    console.log(croppedAreaPixels)
+    
   }, []);
 
   const [src, setSrc] = useState<any>(null);  
@@ -87,7 +87,7 @@ const getCroppedImg=async(imageSrc: any, pixelCrop: { width: number; height: num
     return new Promise((resolve, reject)=>{
         canvas.toBlob((blob) => {
             if (!blob) {
-                console.error("Canvas is empty");
+                
                 return;
             }
             resolve(blob)

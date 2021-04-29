@@ -1,17 +1,15 @@
-import { Button, TextField } from '@material-ui/core';
+import { Button, CircularProgress, TextField } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { AppDispatch } from '../../app/store';
 import GameResults from './GameResults';
-import { fetchAsyncGetGameResults, selectGameResults } from './groupSlice';
+import { endLoadResults, fetchAsyncGetGameResults, selectGameResults, selectIsLoadResults, startLoadResults } from './groupSlice';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import styles from "./Group.module.css";
 
@@ -22,11 +20,14 @@ const MatchRecord:React.FC = () => {
     const gameresults=useSelector(selectGameResults);
     const [date,setDate]=useState("");
     const [enddate,setEndDate]=useState("");
+    const isloadresults=useSelector(selectIsLoadResults);
     const history = useHistory();
     useEffect(()=>{
         const fetchLoader = async ()=>{
             if (localStorage.localJWT) {
+                dispatch(startLoadResults())
                 await dispatch(fetchAsyncGetGameResults(params.id));
+                dispatch(endLoadResults())
             }
         };
         fetchLoader();
@@ -89,7 +90,9 @@ const MatchRecord:React.FC = () => {
             <br/>
             <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
             <br/>
-            <br/>
+            <div className={styles.matchresult_title}>
+                <h2 className={styles.group_title_h2}>対局記録</h2>
+            </div>
             <div className={styles.selectdate_container}>
                 <div className={styles.selectdate_body}>
                     <TextField
@@ -117,73 +120,86 @@ const MatchRecord:React.FC = () => {
                     />
                 </div>
             </div>
-            <div >
-                <div className={styles.match_recode_table}>
+            {isloadresults?
+                <div className={styles.group_home_body_circular_container}>
                     <div>
-                        <Table className={classes.table} size="small" aria-label="a dense table">
+                        <CircularProgress />
+                    </div>
+                </div>
+            :      
+             profile.length!==0?
+                <div >
+                    <div className={styles.match_recode_table}>
+                        <div>
+                            <Table className={classes.table} size="small" aria-label="a dense table">
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell><p className={styles.results_table_p}>成績集計結果</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>合計スコア</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>平均スコア</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>平均順位</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>1位回数</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>2位回数</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>3位回数</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>4位回数</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>対局数</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>トップ率</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>ラス率</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>連対率</p></TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {profile.map((prof)=>(
+                                        <TableRow key={prof.user_id}>
+                                            <TableCell component="th" scope="row"><p className={styles.results_table_p}>{prof.nickName}</p></TableCell>
+                                            <TableCell>
+                                                {prof.score>=0?
+                                                    <p className={styles.results_table_p_blue}>{prof.score}</p>
+                                                :<p className={styles.results_table_p_red}>{prof.score}</p>}
+                                            </TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{(prof.score/prof.gamecount).toFixed(1)}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{((1*prof.rank1+2*prof.rank2+3*prof.rank3+4*prof.rank4)/prof.gamecount).toFixed(1)}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{prof.rank1}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{prof.rank2}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{prof.rank3}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{prof.rank4}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{prof.gamecount}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{(((prof.rank1)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{(((prof.rank4)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
+                                            <TableCell><p className={styles.results_table_p}>{(((prof.rank1+prof.rank2)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+                    <br/>
+                    <div className={styles.result_matchrecode}>
+                        <Table className={classes.table2} size="small" aria-label="a dense table">
                             <TableHead>
-                            <TableRow>
-                                <TableCell><p className={styles.results_table_p}>成績集計結果</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>合計スコア</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>平均スコア</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>平均順位</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>1位回数</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>2位回数</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>3位回数</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>4位回数</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>対局数</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>トップ率</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>ラス率</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>連対率</p></TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell><p className={styles.results_table_p}>日付</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>1位</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>2位</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>3位</p></TableCell>
+                                    <TableCell><p className={styles.results_table_p}>4位</p></TableCell>
+                                </TableRow>
                             </TableHead>
-                            <TableBody>
-                                {profile.map((prof)=>(
-                                    <TableRow key={prof.user_id}>
-                                        <TableCell component="th" scope="row"><p className={styles.results_table_p}>{prof.nickName}</p></TableCell>
-                                        <TableCell>
-                                            {prof.score>=0?
-                                                <p className={styles.results_table_p_blue}>{prof.score}</p>
-                                            :<p className={styles.results_table_p_red}>{prof.score}</p>}
-                                        </TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{(prof.score/prof.gamecount).toFixed(1)}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{((1*prof.rank1+2*prof.rank2+3*prof.rank3+4*prof.rank4)/prof.gamecount).toFixed(1)}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{prof.rank1}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{prof.rank2}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{prof.rank3}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{prof.rank4}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{prof.gamecount}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{(((prof.rank1)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{(((prof.rank4)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
-                                        <TableCell><p className={styles.results_table_p}>{(((prof.rank1+prof.rank2)/prof.gamecount)*100).toFixed(1)}</p></TableCell>
-                                    </TableRow>
-                                ))}
+                            {selectgameresults.map((gameresult)=>(
+                            <TableBody  key={gameresult.id} className={styles.gameresult_container}>
+                                
+                                <GameResults {...gameresult}/>
+                                
                             </TableBody>
+                            ))}
                         </Table>
                     </div>
                 </div>
-                <br/>
-                <div className={styles.result_matchrecode}>
-                    <Table className={classes.table2} size="small" aria-label="a dense table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell><p className={styles.results_table_p}>日付</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>1位</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>2位</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>3位</p></TableCell>
-                                <TableCell><p className={styles.results_table_p}>4位</p></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        {selectgameresults.map((gameresult)=>(
-                        <TableBody  key={gameresult.id} className={styles.gameresult_container}>
-                             
-                            <GameResults {...gameresult}/>
-                            
-                        </TableBody>
-                        ))}
-                    </Table>
+            :
+                <div className={styles.results_table_not_exist_div}>
+                    <p className={styles.results_table_p}>対局記録がありません</p>
                 </div>
-            </div>
+            }
         </div>
     )
 }

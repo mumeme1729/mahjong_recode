@@ -40,6 +40,7 @@ const MemberDetail:React.FC = () => {
     let gamecount:number=0;
     let nickname:string="";
     let img:string="";
+    let text:string="";
     let finduser=false;
     const res=gameresults.map((gameresult)=>{
        return gameresult.results.map((r)=>{
@@ -51,6 +52,7 @@ const MemberDetail:React.FC = () => {
                 if(r.rank===3){rank3+=1}
                 if(r.rank===4){rank4+=1}
                 nickname=r.profile.nickName;
+                text=r.profile.text;
                 img=r.profile.img;
                 finduser=true;
             }
@@ -129,6 +131,7 @@ const MemberDetail:React.FC = () => {
         }
     }else{
         nickname=prof.nickName;
+        text=prof.text;
         img=prof.img;
     }
     const data = [
@@ -143,20 +146,24 @@ const MemberDetail:React.FC = () => {
             <br/>
             <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/member/`)}>戻る</Button>
             <div className={styles.memberdetail_container_top}>
+                <div className={styles.memberdetail_container_top_body}>
                 <div className={styles.memberdetail_prof}>
                     {img!==""?
                         <div className={styles.memberdetail_prof_avatar}>
                             {img[0]!=="h"?
-                                <Avatar alt="who?" src={url+img} style={{height:'70px',width:'70px'}}/>
-                            :   <Avatar alt="who?" src={img} style={{height:'70px',width:'70px'}}/>}
+                                <Avatar alt="who?" src={url+img} style={{height:'80px',width:'80px'}}/>
+                            :   <Avatar alt="who?" src={img} style={{height:'80px',width:'80px'}}/>}
                         </div>
                     :null}
-                    {nickname}
+                    <div className={styles.memberdetail_prof_p_container}>
+                        <p className={styles.memberdetail_prof_p_name}>{nickname}</p>
+                        <p className={styles.memberdetail_prof_p}>{text}</p>
+                    </div>
                 </div>
                 <div className={styles.memberdetail_chart}>
                     <RadarChart // レーダーチャートのサイズや位置、データを指定
                         height={250} //レーダーチャートの全体の高さを指定
-                        width={350} //レーダーチャートの全体の幅を指定
+                        width={340} //レーダーチャートの全体の幅を指定
                         cx="50%" //要素の左を基準に全体の50%移動
                         cy="50%" //要素の上を基準に全体の50%移動
                         outerRadius={100}
@@ -182,10 +189,12 @@ const MemberDetail:React.FC = () => {
                         {/* <Tooltip /> //hoverすると各パラメーターの値が表示される */}
                     </RadarChart>
                 </div>
+                </div>
             </div>
             {finduser?
             <div>
-                <TableContainer component={Paper}>
+                <br/>
+                <div className={styles.match_recode_table}>
                     <Table className={classes.table} size="small" aria-label="a dense table">
                         <TableHead>
                         <TableRow>
@@ -218,7 +227,7 @@ const MemberDetail:React.FC = () => {
                             </TableRow>   
                         </TableBody>
                     </Table>
-                </TableContainer>
+                </div>
             </div>
             :<div>対局記録がありません</div>}
         </div>

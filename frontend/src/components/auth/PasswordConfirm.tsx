@@ -13,7 +13,6 @@ const PasswordConfirm:React.FC = () => {
     const history = useHistory();
     const params = useParams<{ uid: string,token:string }>();
     const location = useLocation();
-    console.log(location.pathname)
     return (
         <div className={styles.password_reset_container}>
             <div className={styles.password_reset_body}>
@@ -27,7 +26,6 @@ const PasswordConfirm:React.FC = () => {
                         if(values.password1===values.password2){
                             const packet={new_password1:values.password1,new_password2:values.password2,uid:params.uid,token:params.token};
                             const result=await dispatch(fetchAsyncPasswordConfirm(packet));
-                            console.log(result)
                         }
                     }}
                     //バリデーション

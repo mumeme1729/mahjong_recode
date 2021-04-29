@@ -31,7 +31,6 @@ class UserActiveView(generics.ListAPIView):
 
     def get_queryset(self):
         token=self.kwargs.get('token')
-        print(token)
         user_activate_token=UserActivate.objects.activate_user(token)
         query=UserActivate.objects.filter(token=token)
         return query
@@ -112,15 +111,11 @@ class ResultsForEachGroup(generics.ListAPIView):
 class ContactView(APIView):
     def post(self,request):
         serializer_class =serializers.ContactSerailizer(data=request.data)
-        print(request.data)
         if serializer_class.is_valid():
             title= request.data['title']
             sender= request.data['sender']
             message= request.data['message']
-            print(title)
-            print(sender)
-            print(message)
-
+  
             #メール送信
             subject = title
             msg = f'''

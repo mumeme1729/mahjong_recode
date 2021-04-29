@@ -19,7 +19,7 @@ export const fetchAsyncParticipationGroup=createAsyncThunk(
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     }).catch(error => {
-      console.log(error.response)
+      
     }); 
   });
 //レート作成
@@ -33,7 +33,7 @@ export const fetchAsyncCreateRate = createAsyncThunk(
       },
     })
     .catch(error => {
-      console.log(error.response)
+      
     });
   }
 );
@@ -150,7 +150,7 @@ export const fetchAsyncEditGameResults=createAsyncThunk(
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     }).catch(error => {
-      console.log(error.response)
+     
     });
     //return res.data;
   }
@@ -165,7 +165,6 @@ export const fetchAsyncPutRate=createAsyncThunk(
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     }).catch(error => {
-      console.log(error.response)
     });
     //return res.data;
   }
@@ -180,7 +179,7 @@ export const fetchAsyncRateIsActive=createAsyncThunk(
         Authorization: `JWT ${localStorage.localJWT}`,
       },
     }).catch(error => {
-      console.log(error.response)
+      
     });
     //return res.data;
   }
@@ -208,6 +207,7 @@ export const groupSlice=createSlice({
       isOpenSettings:false,
       isopengroupimagetrimming:false,
       isload:false,
+      isloadresults:false,
         group:{
             id: 0,
             title: "",
@@ -283,6 +283,12 @@ export const groupSlice=createSlice({
       },
       endLoad(state){
         state.isload=false;
+      },
+      startLoadResults(state){
+        state.isloadresults=true;
+      },
+      endLoadResults(state){
+        state.isloadresults=false;
       }
     },
     extraReducers:(builder)=>{
@@ -290,7 +296,6 @@ export const groupSlice=createSlice({
         state.group = action.payload;
       });
       builder.addCase(fetchAsyncGetSelectProfile.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.profile = action.payload;
       });
       builder.addCase(fetchAsyncGetGameResults.fulfilled, (state, action) => {
@@ -303,17 +308,16 @@ export const groupSlice=createSlice({
         state.group.password=action.payload.password;
       });
       builder.addCase(fetchAsyncUpdateGroup.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.group.title = action.payload.title;
         state.group.text=action.payload.text;
         state.group.password=action.payload.password;
       });
-      builder.addCase(fetchAsyncDeleteGame.fulfilled,(state,action)=>{
-          return {
-            ...state,
-            gameresults:state.gameresults.filter((g)=>g.id!==action.payload),
-          };
-      });
+      // builder.addCase(fetchAsyncDeleteGame.fulfilled,(state,action)=>{
+      //     return {
+      //       ...state,
+      //       gameresults:state.gameresults.filter((g)=>g.id!==action.payload),
+      //     };
+      // });
 
     },
 });
@@ -325,6 +329,8 @@ export const {
  resetOpenGroupImageTrimming,
  startLoad,
  endLoad,
+ startLoadResults,
+ endLoadResults,
 } = groupSlice.actions;
 
 export const selecGroup=(state:RootState)=>state.group.group;
@@ -333,4 +339,5 @@ export const selectOpenSettings=(state:RootState)=>state.group.isOpenSettings;
 export const selectOpenGroupImageTrimming=(state:RootState)=>state.group.isopengroupimagetrimming;
 export const selectSelectProfile=(state:RootState)=>state.group.profile;
 export const selectIsStartLoad=(state:RootState)=>state.group.isload;
+export const selectIsLoadResults=(state:RootState)=>state.group.isloadresults;
 export default groupSlice.reducer;

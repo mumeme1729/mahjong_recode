@@ -179,61 +179,63 @@ const Game:React.FC = () => {
     return (
         <>  
             <br/>
-            
-                <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
-                <br/>
-                <div className={styles.game_main_container}>
-                <div className={styles.page_title_select_member}>
-                    <h2>対局者を選択</h2>
-                </div>
-                <div className={styles.game_container}>        
-                    {groupmember.map((member)=>(
-                        member.is_active &&
-                            <div key={member.id} >
-                                <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
-                                    <div className={styles.game_body}>
-                                        {!memts.includes(member.userProfile)
-                                        ?
-                                            <div>
-                                                <div className={styles.game_avater}>
-                                                    {member.img!==""?
-                                                    <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
-                                                    :null}
-                                                </div>
+            <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
+            <br/>
+            <div className={styles.game_main_container}>
+                <div className={styles.game_main_body}>
+                    <div className={styles.page_title_select_member}>
+                        <h2 className={styles.group_title_h2}>対局者を選択</h2>
+                    </div>
+                    <div className={styles.game_container}>        
+                        {groupmember.map((member)=>(
+                            member.is_active &&
+                                <div key={member.id} >
+                                    <Button  onClick={()=>setUserId(member.userProfile)} className={styles.game_user_btn}>
+                                        <div className={styles.game_body}>
+                                            {!memts.includes(member.userProfile)
+                                            ?
                                                 <div>
-                                                    {member.nickName}
-                                                    <br/>
-                                                    {member.rate}
+                                                    <div className={styles.game_avater}>
+                                                        {member.img!==""?
+                                                        <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                        :null}
+                                                    </div>
+                                                    <div>
+                                                        {member.nickName}
+                                                        <br/>
+                                                        {member.rate}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        :
-                                            <div className={styles.game_selected_profile}>
-                                                <div className={styles.game_avater}>
-                                                    {member.img!==""?
-                                                    <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
-                                                    :null}
+                                            :
+                                                <div className={styles.game_selected_profile}>
+                                                    <div className={styles.game_avater}>
+                                                        {member.img!==""?
+                                                        <Avatar alt="who?" src={url+member.img} style={{height:'70px',width:'70px'}}/>
+                                                        :null}
+                                                    </div>
+                                                    <div>
+                                                        {member.nickName}
+                                                        <br/>
+                                                        {member.rate}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    {member.nickName}
-                                                    <br/>
-                                                    {member.rate}
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                </Button>
-                            </div>
-                    ))}
+                                            }
+                                        </div>
+                                    </Button>
+                                </div>
+                        ))}
+                    </div>
+                    <div className={styles.game_start_btn}>
+                        <Button
+                            disabled={memts.length!==4}
+                            variant="contained"
+                            color="primary"
+                            onClick={newGame}
+                        >
+                            対局開始
+                        </Button>
+                    </div>
                 </div>
-                
-                <Button
-                    disabled={memts.length!==4}
-                    variant="contained"
-                    color="primary"
-                    onClick={newGame}
-                >
-                    対局開始
-                </Button>
             </div>
             <Modal
                 isOpen={openModal}

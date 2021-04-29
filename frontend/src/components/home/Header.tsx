@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
 import { AppDispatch } from "../../app/store";
 import { fetchAsyncGetMyProf, selectLoginUserProfile } from '../auth/authSlice';
-import { fetchAsyncGetBelongToGroup, resetBackUrl, setBackUrl, setOpenProfile } from './homeSlice';
+import { setBackUrl, setOpenProfile } from './homeSlice';
 import styles from "./Home.module.css";
 import { Avatar, Button} from '@material-ui/core';
 import img from './same.svg'
@@ -14,7 +14,6 @@ import Profile from './Profile';
 const Header:React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const history = useHistory();
-    const params = useParams();
     const location = useLocation();
     const loginUserProfile=useSelector(selectLoginUserProfile);
     
@@ -39,12 +38,6 @@ const Header:React.FC = () => {
         fetchLoader();
     },[]);
 
-    function logout(){
-        localStorage.removeItem("localJWT");
-        dispatch(resetBackUrl());
-        history.push('/');
-    }
-
     return (
         <>
             {location.pathname!=='/'?
@@ -58,7 +51,7 @@ const Header:React.FC = () => {
                             <img src={img} className={styles.header_img} width="70px" height="70px"/>    
                         </div>
                     </Link>
-                    {location.pathname.includes('/activate') || location.pathname.includes('/password')?
+                    {location.pathname.includes('/activate') || location.pathname.includes('/password') || location.pathname.includes('/contact') || location.pathname.includes('/disclaimer')?
                     <div></div>
                     :
                         <div className={styles.header_body_right}>

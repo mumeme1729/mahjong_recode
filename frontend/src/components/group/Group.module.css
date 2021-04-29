@@ -147,13 +147,23 @@
     margin-top: 10px;
     text-align: center;
 }
+.matchresult_title{
+    text-align: center;
+    margin-bottom: 5px;
+}
+.results_table_not_exist_div{
+    text-align: center;
+    margin-top: 10px;
+}
 
 /* 対局 */
 
 .game_main_container{
+    display: flex;
+    justify-content: center;
+}
+.game_main_body{
     width: 800px;
-    text-align: center;
-    margin-left: 20%;
 }
 .page_title_select_member{
     text-align: left;
@@ -187,14 +197,35 @@
 /* メンバー詳細 */
 .memberdetail_container_top{
     display: flex;
+    justify-content: center;
+}
+.memberdetail_container_top_body{
+    display:flex;
+}
+.game_start_btn{
+    text-align: center;
+    margin-top: 10px;
 }
 .memberdetail_prof{
-    width: 200px;
+    width: 400px;
     text-align: center;
     margin-top: 80px;
 }
+.memberdetail_prof_p_container{
+    margin-top: 6px;
+}
+.memberdetail_prof_p_name{
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 22px;
+    margin-top: -6px;
+}
+.memberdetail_prof_p{
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-top: -8px;
+}
 .memberdetail_prof_avatar{
-    margin-left: 65px;
+    margin-left: 170px;
+    margin-bottom: 5px;
 }
 /* 設定モーダル */
 .leavegroup{
@@ -271,12 +302,28 @@
     /* メンバー詳細 */
     .memberdetail_container_top{
         display: flex;
+        justify-content: center;
+    }
+    .memberdetail_container_top_body{
+        display: flex;
         flex-flow: column;
+        justify-content: center;
     }
     .memberdetail_prof{
-        width: 200px;
-        margin-top: 5px;
-        margin-left: -60px;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    .memberdetail_prof_avatar{
+        margin-left: 160px;
+        margin-bottom: 5px;
+    }
+    .memberdetail_chart{
+        display: flex;
+        justify-content: center;
+        width: 96%;
     }
     /* 記録 */
     .match_recode_table{

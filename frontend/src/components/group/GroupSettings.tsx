@@ -59,9 +59,7 @@ const GroupSettings:React.FC = () => {
         if(updateTitle===""){updateTitle=group.title}
         if(updateText===""){updateText=group.text}
         if(updatePassword===""){updatePassword=group.password}
-        console.log(updateTitle)
         const packet = { id: group.id, title:updateTitle,text:updateText,password:updatePassword};
-        console.log(packet)
         await dispatch(fetchAsyncUpdateGroup(packet));   
         dispatch(resetOpenSettings());
     };
@@ -72,7 +70,6 @@ const GroupSettings:React.FC = () => {
 
     const leaveGroup=async()=>{
         let rate_id:number=0;
-            console.log(groupmember)
             groupmember.forEach((gm)=>{
                 if(gm.userProfile===loginuserprofile.userProfile){
                     rate_id=gm.rate_id

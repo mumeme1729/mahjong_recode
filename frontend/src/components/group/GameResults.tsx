@@ -5,14 +5,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import { AppDispatch } from '../../app/store';
 import { PROPS_GAME_RESULTS } from '../types'
 import { fetchAsyncDeleteGame, fetchAsyncEditGameResults, fetchAsyncGetGameResults, fetchAsyncPutRate, selecGroup, selectGameResults } from './groupSlice';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import styles from "./Group.module.css";
 import { Button, CircularProgress, TableRow, TextField } from '@material-ui/core';
 import Modal from "react-modal";
 
 const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
-    const history = useHistory();
     const params = useParams<{ id: string }>();
     const dispatch: AppDispatch = useDispatch();
     const group=useSelector(selecGroup);
@@ -66,11 +64,19 @@ const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
             }
         })
         rate.map(async(r)=>{
-            await dispatch(fetchAsyncPutRate(r));
+                await dispatch(fetchAsyncPutRate(r));
         });
-        await dispatch(fetchAsyncDeleteGame(id));
-        // history.push(`/group/${params.id}`)
+        const result=await dispatch(fetchAsyncDeleteGame(id));
+        if(fetchAsyncDeleteGame.fulfilled.match(result)){
+            setScore1({id:0,score:0});
+            setScore2({id:0,score:0});
+            setScore3({id:0,score:0});
+            setScore4({id:0,score:0});
+        }
         setOpenModal(false);
+        setOpenDeleteResults(false);
+        window.location.reload();
+
     }
 
     const editGame=async()=>{
@@ -242,8 +248,7 @@ const GameResults:React.FC<PROPS_GAME_RESULTS> = (gameresults) => {
                 ariaHideApp={false}
             >
                 <div>
-                    <p className={styles.leavegroup_p}>本当にグループを抜けますか？</p>
-                    <p className={styles.leavegroup_p_c}> ※ グループを抜けても対局記録は消えません</p>
+                    <p className={styles.leavegroup_p}>本当に記録を削除しますか？</p>
                 </div>
                 <div className={styles.leavegroup_container}>
                     <div className={styles.leavegroup_body}>

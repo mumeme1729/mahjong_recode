@@ -136,9 +136,12 @@
 }
 /* フッター */
 .footer_container{
-    text-align: center;
     margin-top: 250px;
     bottom: 0; /*下に固定*/
+    text-align: center;
+}
+.footer_p_div{
+    margin-top: -10px;
 }
 .footer_link{
     text-decoration: none; 

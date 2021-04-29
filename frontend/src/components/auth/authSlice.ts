@@ -14,7 +14,6 @@ export const fetchAsyncRegister=createAsyncThunk(
             "Content-Type": "application/json",
           },
         }).catch(error=>{
-          //console.log(error.response)
           return error.response
         });
         return res.data;
@@ -141,7 +140,6 @@ export const fetchAsyncPasswordConfirm=createAsyncThunk(
         "Content-Type": "application/json",
       },
     }).catch(error=>{
-      console.log(error.response)
       return error.response
     });
     return res.data;

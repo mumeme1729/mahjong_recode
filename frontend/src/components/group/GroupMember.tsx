@@ -75,8 +75,9 @@ const GroupMember:React.FC = () => {
             <Button variant="outlined" color="primary" onClick={()=>history.push(`/group/${params.id}/`)}>戻る</Button>
             <br/>
             <div className={styles.game_main_container}>
+            <div className={styles.game_main_body}>
                 <div className={styles.page_title_group_member}>
-                    <h2>グループメンバー</h2> 
+                    <h2 className={styles.group_title_h2}>グループメンバー</h2> 
                     <div className={styles.update_rate_btn}>
                         <Button color="primary" onClick={()=>{updateRate()}}>
                             レート更新
@@ -105,6 +106,7 @@ const GroupMember:React.FC = () => {
                                 </div>
                             </div>
                     ))}
+                </div>
                 </div>
             </div>
         </div>

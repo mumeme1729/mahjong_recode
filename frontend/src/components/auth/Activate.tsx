@@ -16,7 +16,6 @@ const Activate:React.FC = () => {
     const backurl=useSelector(selectBackUrl);
     useEffect(()=>{
         const fetchLoader = async ()=>{
-            console.log(params.token)
             if(params.token!==""){
               const result=  await dispatch(fetchAsyncActivateUser(params.token));   
             }
@@ -35,8 +34,6 @@ const Activate:React.FC = () => {
                     if (fetchAsyncLogin.fulfilled.match(result)) {
                         const res=await dispatch(fetchAsyncCreateProf({ nickName: "no name"}));
                         if(fetchAsyncCreateProf.fulfilled.match(res)){
-                            console.log(backurl);
-                            console.log("ラスト")
                             if(backurl===""){
                                 history.push('/home');
                             }else{

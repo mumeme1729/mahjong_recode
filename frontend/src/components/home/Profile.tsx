@@ -33,9 +33,11 @@ const Profile:React.FC = () => {
     const history = useHistory();
     
     const updateProfile = async () => {
-        console.log(name)
-        console.log(text)
-        const packet = { id: profile.id, nickName: name,text:text};
+        let updateName=name;
+        let updateText=text;
+        if(updateName===""){updateName=profile.nickName}
+        if(updateText===""){updateText=profile.text}
+        const packet = { id: profile.id, nickName: updateName,text:updateText};
         await dispatch(fetchAsyncUpdateProf(packet));   
         dispatch(resetOpenProfile());
     };

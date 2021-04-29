@@ -127,8 +127,6 @@ const GroupHome:React.FC = () => {
             })
             if(flag){
                 member.push(loginuserprofile.userProfile);
-                console.log(loginuserprofile.userProfile);
-                console.log(member)
                 const pkt={id:group.id,userGroup:member}
                 const results=await dispatch(fetchAsyncParticipationGroup(pkt));
                 if(fetchAsyncParticipationGroup.fulfilled.match(results)){
@@ -138,12 +136,10 @@ const GroupHome:React.FC = () => {
             }else{
                 const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:true}
                 const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
-                console.log(results);
             }
             setIsTrue(true);
             
         }else{
-            console.log(group.password)
             setIsOpenPasswordWindow(true);
         }
     }
@@ -170,13 +166,11 @@ const GroupHome:React.FC = () => {
             }else{
                 const rate_pkt={rate_id:rate_id,group_id:params.id,user_id:loginuserprofile.userProfile,is_active:true}
                 const results=await dispatch(fetchAsyncRateIsActive(rate_pkt));
-                console.log(results);
             }
             setIsTrue(true);
             setNotMatchPass(false);
             setPassword("");
             setIsOpenPasswordWindow(false);
-            console.log(istrue)
         }else{
             setNotMatchPass(true);
             setPassword("");
@@ -250,15 +244,15 @@ const GroupHome:React.FC = () => {
                             <>
                                 <div className={styles.group_home_container_left}>
                                     <div className={styles.group_home_menu}>
-                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/game`)}}>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/game`);window.scrollTo(0, 0);}}>
                                             <h3 className={styles.hgrouphome_menu_btn_h3}>対局 </h3>　
                                         </div>
                                         <br/>
-                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/member`)}}>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/member`);window.scrollTo(0, 0);}}>
                                             <h3 className={styles.hgrouphome_menu_btn_h3}>メンバー</h3>
                                         </div>
                                         <br/>
-                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/matchrecord`)}}>
+                                        <div className={styles.grouphome_btn} onClick={()=>{history.push(`/group/${params.id}/matchrecord`);window.scrollTo(0, 0);}}>
                                             <h3 className={styles.hgrouphome_menu_btn_h3}>対局記録</h3>
                                         </div>
                                         <br/>

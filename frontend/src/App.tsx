@@ -15,6 +15,7 @@ import GroupMember from './components/group/GroupMember';
 import MatchRecord from './components/group/MatchRecord';
 import MemberDetail from './components/group/MemberDetail';
 import Contact from './components/home/Contact';
+import Disclaimer from './components/home/Disclaimer';
 import Footer from './components/home/Footer';
 import Header from './components/home/Header';
 import Home from './components/home/Home';
@@ -30,6 +31,7 @@ function App(){
                     <Route path='/password/reset' component={PasswordReset}/>
                     <Route path='/password_confirm/:uid/:token'component={PasswordConfirm}/>
                     <Route path="/contact" component={Contact}/>
+                    <Route path="/disclaimer" component={Disclaimer}/>
                     <Route exact path="/" component={Auth}/>
                     <Route path="/create_done" component={Auth_done}/>
                     <Route path="/home" component={Home}/>

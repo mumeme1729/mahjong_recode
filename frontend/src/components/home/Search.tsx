@@ -57,6 +57,9 @@ const Search:React.FC = () => {
                 const rate_pkt={group_id:group_id,user_id:loginuserprofile.userProfile,is_active:true}
                 const rate_results=await dispatch(fetchAsyncCreateRate(rate_pkt));
                 if(fetchAsyncCreateRate.fulfilled.match(rate_results)){
+                    setGroupName("");
+                    setImage(null);
+                    setOpenModal(false);
                     history.push(`/group/${group_id}`)
                 }
             }   
